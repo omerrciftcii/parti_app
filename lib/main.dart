@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:parti_app/providers/auth_provider.dart';
+import 'package:parti_app/screens/landing_screen.dart';
 import 'package:parti_app/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home:  LoginScreen(),
+        home: LandingScreen(),
       ),
     );
   }

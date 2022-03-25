@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:parti_app/models/failure.dart';
 
 enum Status { uninitialized, authenticated, authenticating, unauthenticated }
@@ -14,9 +16,12 @@ class AuthProvider extends ChangeNotifier {
   FirebaseAuth.FirebaseAuth _auth;
   FirebaseAuth.User? _user;
   Status _status = Status.uninitialized;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   AuthProvider.instance() : _auth = FirebaseAuth.FirebaseAuth.instance {
-    _auth.authStateChanges();
+    _auth.authStateChanges().listen((event) {
+      _onAuthStateChanged(event);
+    });
   }
 
   Status get status => _status;
@@ -39,6 +44,27 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> signInWithGoogle() async {
+    try {
+      _status = Status.authenticating;
+      notifyListeners();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+      return true;
+    } catch (e) {
+      print(e);
+      _status = Status.unauthenticated;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future signOut() async {
     _auth.signOut();
     _status = Status.unauthenticated;
@@ -46,7 +72,7 @@ class AuthProvider extends ChangeNotifier {
     return Future.delayed(Duration.zero);
   }
 
-  Future<void> _onAuthStateChanged(FirebaseAuth.User firebaseUser) async {
+  void _onAuthStateChanged(FirebaseAuth.User? firebaseUser) {
     if (firebaseUser == null) {
       _status = Status.unauthenticated;
     } else {
