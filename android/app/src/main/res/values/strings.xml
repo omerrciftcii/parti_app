@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Parti App</string>
+  <string name="facebook_app_id">340889708016392</string>
+  <string name="fb_login_protocol_scheme">fb340889708016392</string>
+  <string name="facebook_client_token">5cba76b7ef3cf34858c17a35b77cf647</string>
+
+</resources>

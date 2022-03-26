@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/screens/login_screen.dart';
+import 'package:parti_app/screens/register_screen.dart';
 
 import '../widgets/custom_button.dart';
 
@@ -39,13 +40,24 @@ class InitScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 18, bottom: 24),
-              child: CustomButton(
-                backgroundColor: Colors.grey[300],
-                text: 'Sign up',
-                textStyle: GoogleFonts.ubuntu(
-                    color: Colors.black, fontWeight: FontWeight.bold),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RegisterScreen(),
+                  ),
+                );
+              },
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 18.0, right: 18, bottom: 24),
+                child: CustomButton(
+                  backgroundColor: Colors.grey[300],
+                  text: 'Sign up',
+                  textStyle: GoogleFonts.ubuntu(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             Padding(
