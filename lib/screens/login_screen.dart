@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/providers/auth_provider.dart';
+import 'package:parti_app/screens/register_screen.dart';
 import 'package:parti_app/widgets/custom_button.dart';
 import 'package:parti_app/widgets/custom_textfield.dart';
 import 'package:parti_app/widgets/social_media_button.dart';
@@ -15,15 +16,15 @@ class LoginScreen extends StatelessWidget {
     var authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.arrow_back_outlined,
-            color: Colors.black,
-          ),
-        ),
+        // leading: GestureDetector(
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //   },
+        //   child: Icon(
+        //     Icons.arrow_back_outlined,
+        //     color: Colors.black,
+        //   ),
+        // ),
         backgroundColor: Colors.white,
         title: Text(
           'Welcome!',
@@ -106,17 +107,16 @@ class LoginScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CustomTextField(
-                  controller: authProvider.emailController,
-                  hintText: 'Email',
-                  validator: (value) {
-                    if (value == "") {
-                      return 'Please enter valid email';
-                    }
-                    return null;
-                  },
+                controller: authProvider.emailController,
+                hintText: 'Email',
+                validator: (value) {
+                  if (value == "") {
+                    return 'Please enter valid email';
+                  }
+                  return null;
+                },
                 inputType: TextInputType.emailAddress,
-                  
-                  ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 18.0, right: 18, bottom: 9),
@@ -151,7 +151,10 @@ class LoginScreen extends StatelessWidget {
                 : GestureDetector(
                     onTap: () async {
                       try {
-                        await authProvider.signIn();
+                        await authProvider.signIn(
+                          null,
+                          null,
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -192,10 +195,10 @@ class LoginScreen extends StatelessWidget {
                       style:
                           const TextStyle(fontSize: 12, color: Colors.orange),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => Navigator.push(
+                        ..onTap = () => Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => LoginScreen(),
+                                builder: (_) => RegisterScreen(),
                               ),
                             ),
                     ),

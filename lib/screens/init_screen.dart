@@ -4,6 +4,7 @@ import 'package:parti_app/screens/login_screen.dart';
 import 'package:parti_app/screens/register_screen.dart';
 
 import '../widgets/custom_button.dart';
+import 'home_screen.dart';
 
 class InitScreen extends StatelessWidget {
   @override
@@ -60,12 +61,22 @@ class InitScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 12),
-              child: Text(
-                'Continue as guest',
-                style: GoogleFonts.ubuntu(
-                    color: Colors.white, fontWeight: FontWeight.bold),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => HomeScreen(),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: Text(
+                  'Continue as guest',
+                  style: GoogleFonts.ubuntu(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],

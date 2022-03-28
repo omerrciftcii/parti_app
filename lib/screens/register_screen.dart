@@ -13,15 +13,15 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.arrow_back_outlined,
-            color: Colors.black,
-          ),
-        ),
+        // leading: GestureDetector(
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //   },
+        //   child: Icon(
+        //     Icons.arrow_back_outlined,
+        //     color: Colors.black,
+        //   ),
+        // ),
         backgroundColor: Colors.white,
         title: Text(
           'Sign up!',
@@ -109,7 +109,7 @@ class RegisterScreen extends StatelessWidget {
                     text: ' Sign in',
                     style: TextStyle(fontSize: 12, color: Colors.orange),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.push(
+                      ..onTap = () => Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (_) => LoginScreen(),

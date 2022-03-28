@@ -9,11 +9,17 @@ enum Status { uninitialized, authenticated, authenticating, unauthenticated }
 
 class AuthProvider extends ChangeNotifier {
   final _loginFormKey = GlobalKey<FormState>();
+  final _registerFormKey = GlobalKey<FormState>();
+
   GlobalKey<FormState> get loginFormKey => _loginFormKey;
+  GlobalKey<FormState> get registerFormKey => _registerFormKey;
+
   final TextEditingController _emailController = TextEditingController();
   TextEditingController get emailController => _emailController;
   final TextEditingController _registerEmailController =
       TextEditingController();
+  int _selectedAge = 0;
+  String _selectedGender = "";
 
   final TextEditingController _registerPasswordController =
       TextEditingController();
@@ -25,6 +31,18 @@ class AuthProvider extends ChangeNotifier {
   FirebaseAuth.User? _user;
   Status _status = Status.uninitialized;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  int get selectedAge => _selectedAge;
+  String get selectedGender => _selectedGender;
+  set selectedGender(value) {
+    _selectedGender = value;
+    notifyListeners();
+  }
+
+  set selectedAge(value) {
+    _selectedAge = value;
+    notifyListeners();
+  }
+
   bool _isTextVisible = false;
   set isTextVisible(value) {
     _isTextVisible = !_isTextVisible;
@@ -46,20 +64,54 @@ class AuthProvider extends ChangeNotifier {
   Status get status => _status;
   FirebaseAuth.User? get user => _user;
 
-  Future<bool?>? signIn() async {
+  Future<bool?>? signIn(String? email, String? password) async {
     Failure? failure;
-    if (_loginFormKey.currentState!.validate()) {
-      try {
-        _status = Status.authenticating;
-        notifyListeners();
-        await _auth.signInWithEmailAndPassword(
-            email: emailController.text, password: passwordController.text);
-        return true;
-      } catch (e) {
-        _status = Status.unauthenticated;
-        notifyListeners();
-        throw Exception(e);
+    if (email != null) {
+      if (_registerFormKey.currentState!.validate()) {
+        try {
+          _status = Status.authenticating;
+          notifyListeners();
+          await _auth.signInWithEmailAndPassword(
+              email: email, password: password ?? '');
+          return true;
+        } catch (e) {
+          _status = Status.unauthenticated;
+          notifyListeners();
+          throw Exception(e);
+        }
       }
+    } else {
+      if (_loginFormKey.currentState!.validate()) {
+        try {
+          _status = Status.authenticating;
+          notifyListeners();
+          await _auth.signInWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+          return true;
+        } catch (e) {
+          _status = Status.unauthenticated;
+          notifyListeners();
+          throw Exception(e);
+        }
+      }
+    }
+  }
+
+  Future<bool> signUpWithEmail() async {
+    try {
+      _status = Status.authenticating;
+      notifyListeners();
+      var result = await _auth.createUserWithEmailAndPassword(
+          email: registerEmailController.text,
+          password: registerPasswordController.text);
+      signIn(_registerEmailController.text, _registerPasswordController.text);
+      _status = Status.authenticated;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _status = Status.unauthenticated;
+      notifyListeners();
+      throw Exception(e);
     }
   }
 
