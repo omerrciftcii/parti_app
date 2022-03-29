@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:parti_app/providers/auth_provider.dart';
+import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/screens/landing_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider.instance()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

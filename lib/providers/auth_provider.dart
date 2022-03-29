@@ -163,10 +163,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future signOut() async {
-    _auth.signOut();
+    await _auth.signOut();
     _status = Status.unauthenticated;
     notifyListeners();
-    return Future.delayed(Duration.zero);
+    return true;
   }
 
   void _onAuthStateChanged(FirebaseAuth.User? firebaseUser) {

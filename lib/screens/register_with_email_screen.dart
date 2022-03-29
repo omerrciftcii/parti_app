@@ -85,7 +85,7 @@ class RegisterWithEmailScreen extends StatelessWidget {
                 suffixIconPressed: () {
                   authProvider.isTextVisible = true;
                 },
-                isSecureText: authProvider.isTextVisible,
+                isSecureText: !authProvider.isTextVisible,
               ),
             ),
             Padding(
@@ -251,28 +251,40 @@ class RegisterWithEmailScreen extends StatelessWidget {
                         });
                       });
                 }),
-            GestureDetector(
-              onTap: () async {
-                var result = await authProvider.signUpWithEmail();
-                if (result) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => HomeScreen(),
+            authProvider.status == Status.authenticating
+                ? Center(child: CircularProgressIndicator())
+                : GestureDetector(
+                    onTap: () async {
+                      try {
+                        var result = await authProvider.signUpWithEmail();
+                        if (result) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => HomeScreen(),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              e.toString(),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 18.0, right: 18),
+                      child: CustomButton(
+                        backgroundColor: Colors.cyan,
+                        text: 'Sign up',
+                        textStyle: GoogleFonts.ubuntu(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
-                  );
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.only(left: 18.0, right: 18),
-                child: CustomButton(
-                  backgroundColor: Colors.cyan,
-                  text: 'Sign up',
-                  textStyle: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-            ),
+                  ),
           ],
         ),
       ),
