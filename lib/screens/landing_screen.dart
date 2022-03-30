@@ -3,6 +3,7 @@ import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/screens/init_screen.dart';
 import 'package:parti_app/screens/login_screen.dart';
 import 'package:parti_app/screens/splash_screen.dart';
+import 'package:parti_app/widgets/bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
 import 'home_screen.dart';
@@ -23,7 +24,7 @@ class LandingScreen extends StatelessWidget {
           child: CircularProgressIndicator(),
         );
       case Status.authenticated:
-        return HomeScreen();
+        return BottomNavigationBarWidget();
 
       default:
         return InitScreen();

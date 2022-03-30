@@ -143,7 +143,7 @@ class LoginScreen extends StatelessWidget {
                 suffixIconPressed: () {
                   authProvider.isTextVisible = true;
                 },
-                isSecureText: authProvider.isTextVisible,
+                isSecureText: !authProvider.isTextVisible,
               ),
             ),
             authProvider.status == Status.authenticating
@@ -155,6 +155,7 @@ class LoginScreen extends StatelessWidget {
                           null,
                           null,
                         );
+                        Navigator.pop(context);
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

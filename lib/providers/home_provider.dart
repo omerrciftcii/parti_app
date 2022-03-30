@@ -7,6 +7,13 @@ class HomeProvider extends ChangeNotifier {
   String? _address, _dateTime;
   String _addressTitle = "";
   String get addressTitle => _addressTitle;
+  bool _isWaiting = false;
+  bool get isWaiting => _isWaiting;
+  set isWaiting(value) {
+    _isWaiting = value;
+    notifyListeners();
+  }
+
   set addressTitle(value) {
     _addressTitle = value;
     notifyListeners();
@@ -20,26 +27,28 @@ class HomeProvider extends ChangeNotifier {
   Future<void> getCurrentLocation() async {
     bool _serviceEnabled;
     Location.PermissionStatus _permissionGranted;
-    _serviceEnabled = await Location.Location.instance.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await Location.Location.instance.requestService();
+    try {
+      _serviceEnabled = await Location.Location.instance.serviceEnabled();
       if (!_serviceEnabled) {
-        return;
-      }
-      _permissionGranted = await Location.Location.instance.hasPermission();
-      if (_permissionGranted == Location.PermissionStatus.denied) {
-        _permissionGranted =
-            await Location.Location.instance.requestPermission();
-        if (_permissionGranted != Location.PermissionStatus.granted) {
+        _serviceEnabled = await Location.Location.instance.requestService();
+        if (!_serviceEnabled) {
           return;
         }
+        _permissionGranted = await Location.Location.instance.hasPermission();
+        if (_permissionGranted == Location.PermissionStatus.denied) {
+          _permissionGranted =
+              await Location.Location.instance.requestPermission();
+          if (_permissionGranted != Location.PermissionStatus.granted) {
+            return;
+          }
+        }
       }
-    }
 
-    _currentPosition = await Location.Location.instance.getLocation();
+      _currentPosition = await Location.Location.instance.getLocation();
 
-    var address = getAddress(
-        _currentPosition!.latitude ?? 0, _currentPosition?.longitude ?? 0);
+      var address = getAddress(
+          _currentPosition!.latitude ?? 0, _currentPosition?.longitude ?? 0);
+    } catch (e) {}
   }
 
   Future<void> getAddress(double lat, double lon) async {
@@ -49,9 +58,20 @@ class HomeProvider extends ChangeNotifier {
 
       Placemark place = placemarks[0];
 
-      addressTitle = "${place.locality}, ${place.postalCode}, ${place.country}";
+      addressTitle = "${place.locality}";
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> initializeSettings() async {
+    try {
+      isWaiting = true;
+
+      await getCurrentLocation();
+      isWaiting = false;
+    } catch (e) {
+      isWaiting = false;
     }
   }
 }
