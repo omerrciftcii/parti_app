@@ -46,8 +46,7 @@ class HomeProvider extends ChangeNotifier {
 
       _currentPosition = await Location.Location.instance.getLocation();
 
-      var address = getAddress(
-          _currentPosition!.latitude ?? 0, _currentPosition?.longitude ?? 0);
+      
     } catch (e) {}
   }
 

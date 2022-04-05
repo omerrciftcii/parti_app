@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,9 @@ class MapScreenState extends State<ProfilePage>
     var userProvider = Provider.of<UserProvider>(
       context,
     );
+    var homeProvider = Provider.of<HomeProvider>(
+      context,
+    );
     return SafeArea(
       child: Scaffold(
           backgroundColor: Color(0xffFDFFE5),
@@ -70,7 +74,6 @@ class MapScreenState extends State<ProfilePage>
                 Column(
                   children: <Widget>[
                     Container(
-                      height: 250.0,
                       child: Column(
                         children: <Widget>[
                           Padding(
@@ -180,299 +183,50 @@ class MapScreenState extends State<ProfilePage>
                                     ],
                                   )),
                             ]),
-                          )
+                          ),
+                          Text(
+                            authProvider.currentUser!.name,
+                            style: GoogleFonts.jost(
+                                fontWeight: FontWeight.w500, fontSize: 20),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.mode_of_travel_outlined,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                homeProvider.addressTitle,
+                                style: GoogleFonts.jost(),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.mark_as_unread_outlined,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                authProvider.currentUser!.email,
+                                style: GoogleFonts.jost(),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
-                    Container(
-                      color: const Color(0xffFFFFFF),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 25.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const <Widget>[
-                                        Text(
-                                          'Personal Information',
-                                          style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        _status ? _getEditIcon() : Container(),
-                                      ],
-                                    )
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const <Widget>[
-                                        Text(
-                                          'Name',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          hintText:
-                                              authProvider.currentUser!.name,
-                                        ),
-                                        enabled: !_status,
-                                        autofocus: !_status,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          authProvider.currentUser!.email,
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextField(
-                                        decoration: const InputDecoration(
-                                            hintText: "Enter Email ID"),
-                                        enabled: !_status,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          'Mobile',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextField(
-                                        decoration: const InputDecoration(
-                                            hintText: "Enter Mobile Number"),
-                                        enabled: !_status,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          'Pin Code',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      flex: 2,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          'State',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      flex: 2,
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(right: 10.0),
-                                        child: TextField(
-                                          decoration: const InputDecoration(
-                                              hintText: "Enter Pin Code"),
-                                          enabled: !_status,
-                                        ),
-                                      ),
-                                      flex: 2,
-                                    ),
-                                    Flexible(
-                                      child: TextField(
-                                        decoration: const InputDecoration(
-                                            hintText: "Enter State"),
-                                        enabled: !_status,
-                                      ),
-                                      flex: 2,
-                                    ),
-                                  ],
-                                )),
-                            !_status ? _getActionButtons() : Container(),
-                          ],
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ],
             ),
           )),
-    );
-  }
-
-  Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Save"),
-                textColor: Colors.white,
-                color: Colors.green,
-                onPressed: () {
-                  setState(() {
-                    _status = true;
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Cancel"),
-                textColor: Colors.white,
-                color: Colors.red,
-                onPressed: () {
-                  setState(() {
-                    _status = true;
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 2,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _getEditIcon() {
-    return GestureDetector(
-      child: CircleAvatar(
-        backgroundColor: Colors.red,
-        radius: 14.0,
-        child: Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _status = false;
-        });
-      },
     );
   }
 }
