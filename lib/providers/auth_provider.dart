@@ -189,6 +189,7 @@ class AuthProvider extends ChangeNotifier {
           FacebookAuthProvider.credential(result.accessToken!.token);
       final userCredential =
           await _auth.signInWithCredential(facebookCredential);
+
       if (_auth.currentUser?.uid != null) {
         _status = Status.authenticated;
         notifyListeners();
@@ -217,5 +218,10 @@ class AuthProvider extends ChangeNotifier {
       _status = Status.authenticated;
     }
     notifyListeners();
+  }
+
+  Future<void> getCurrentUser() async {
+    var response = await AuthService.getCurrentUser(_user!.uid);
+    currentUser = response;
   }
 }

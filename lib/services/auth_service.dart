@@ -4,9 +4,10 @@ import 'package:parti_app/models/app_user.dart';
 class AuthService {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   static Future<AppUser> addUserToDb(AppUser userData) async {
-    var response = await _firebaseFirestore.collection('users').add(
-          userData.toJson(),
-        );
+    var response =
+        await _firebaseFirestore.collection('users').doc(userData.userId).set(
+              userData.toJson(),
+            );
     return userData;
   }
 

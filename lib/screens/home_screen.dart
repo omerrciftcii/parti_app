@@ -20,8 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    var authProvider = Provider.of<AuthProvider>(context, listen: false);
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       homeProvider.initializeSettings();
+      authProvider.getCurrentUser();
     });
     // TODO: implement initState
     super.initState();

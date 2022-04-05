@@ -69,6 +69,7 @@ class HomeProvider extends ChangeNotifier {
       isWaiting = true;
 
       await getCurrentLocation();
+      
       isWaiting = false;
     } catch (e) {
       isWaiting = false;
