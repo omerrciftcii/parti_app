@@ -1,8 +1,24 @@
-// class AppUser {
-//   String name;
-//   String surname;
-//   String age;
-//   String profilePicture;
-//   bool isPremium;
-  
-// }
+import 'package:json_annotation/json_annotation.dart';
+
+part 'app_user.g.dart';
+@JsonSerializable()
+class AppUser {
+  final String name;
+  final String userId;
+  int? age;
+  final String email;
+  String? profilePicture;
+  bool? isPremium;
+
+  AppUser(
+      {required this.name,
+      required this.userId,
+      this.age,
+      this.isPremium,
+      this.profilePicture, required this.email});
+
+      factory AppUser.fromJson(Map<String, dynamic> json) => _$AppUserFromJson(json);
+
+
+   Map<String, dynamic> toJson() => _$AppUserToJson(this);
+}

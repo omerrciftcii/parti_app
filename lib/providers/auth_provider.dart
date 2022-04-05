@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:parti_app/models/app_user.dart';
 import 'package:parti_app/models/failure.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:parti_app/services/auth_service.dart';
 
 enum Status { uninitialized, authenticated, authenticating, unauthenticated }
 
@@ -29,9 +31,23 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController get passwordController => _passwordController;
   FirebaseAuth.FirebaseAuth _auth;
   FirebaseAuth.User? _user;
+  AppUser? _currentUser;
+  AppUser? get currentUser => _currentUser;
+  set currentUser(value) {
+    _currentUser = value;
+    notifyListeners();
+  }
+
   Status _status = Status.uninitialized;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   int get selectedAge => _selectedAge;
+  bool _isUserAddedToAuth = false;
+  bool get isUserAddedToAuth => _isUserAddedToAuth;
+  set isUserAddedToAuth(value) {
+    _isUserAddedToAuth = value;
+    notifyListeners();
+  }
+
   String get selectedGender => _selectedGender;
   set selectedGender(value) {
     _selectedGender = value;
@@ -104,11 +120,22 @@ class AuthProvider extends ChangeNotifier {
       var result = await _auth.createUserWithEmailAndPassword(
           email: registerEmailController.text,
           password: registerPasswordController.text);
+      await AuthService.addUserToDb(
+        AppUser(
+            name: _registerNameController.text,
+            userId: result.user!.uid,
+            email: result.user?.email ?? ''),
+      );
+      isUserAddedToAuth = true;
       signIn(_registerEmailController.text, _registerPasswordController.text);
+
       _status = Status.authenticated;
+
       notifyListeners();
+
       return true;
     } catch (e) {
+      _auth.currentUser?.delete();
       _status = Status.unauthenticated;
       notifyListeners();
       throw Exception(e);
@@ -120,14 +147,27 @@ class AuthProvider extends ChangeNotifier {
       _status = Status.authenticating;
       notifyListeners();
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      await _auth.signInWithCredential(credential);
+      var result = await _auth.signInWithCredential(credential);
       if (_auth.currentUser?.uid != null) {
+        if (!await AuthService.isUserExist(_auth.currentUser!.uid)) {
+          currentUser = await AuthService.addUserToDb(
+            AppUser(
+                name: result.user!.displayName ?? 'Unknown',
+                userId: result.user!.uid,
+                email: user?.email ?? ''),
+          );
+        } else {
+          currentUser =
+              await AuthService.getCurrentUser(_auth.currentUser!.uid);
+        }
+
         _status = Status.authenticated;
         notifyListeners();
       }

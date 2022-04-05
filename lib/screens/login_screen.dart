@@ -132,11 +132,11 @@ class LoginScreen extends StatelessWidget {
                   return null;
                 },
                 suffixIcon: authProvider.isTextVisible
-                    ? FaIcon(
+                    ? const FaIcon(
                         Icons.visibility_off,
                         color: Colors.grey,
                       )
-                    : FaIcon(
+                    : const FaIcon(
                         Icons.visibility,
                         color: Colors.grey,
                       ),
@@ -147,7 +147,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             authProvider.status == Status.authenticating
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : GestureDetector(
                     onTap: () async {
                       try {
@@ -177,7 +177,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
             Padding(
-              padding: EdgeInsets.only(top: 18),
+              padding: const EdgeInsets.only(top: 18),
               child: Text(
                 'Forgot password?',
                 style: GoogleFonts.ubuntu(color: Colors.grey),
@@ -199,7 +199,7 @@ class LoginScreen extends StatelessWidget {
                         ..onTap = () => Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => RegisterScreen(),
+                                builder: (_) => const RegisterScreen(),
                               ),
                             ),
                     ),

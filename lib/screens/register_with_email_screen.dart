@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/constants/constants.dart';
 import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/screens/home_screen.dart';
+import 'package:parti_app/widgets/bottom_navigation_bar.dart';
 import 'package:parti_app/widgets/custom_button.dart';
 import 'package:parti_app/widgets/custom_textfield.dart';
 import 'package:provider/provider.dart';
@@ -258,10 +259,11 @@ class RegisterWithEmailScreen extends StatelessWidget {
                       try {
                         var result = await authProvider.signUpWithEmail();
                         if (result) {
+                          Navigator.popUntil(context, (route) => route.isFirst);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => HomeScreen(),
+                              builder: (_) => BottomNavigationBarWidget(),
                             ),
                           );
                         }
