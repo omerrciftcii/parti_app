@@ -45,8 +45,8 @@ class HomeProvider extends ChangeNotifier {
       }
 
       _currentPosition = await Location.Location.instance.getLocation();
-
-      
+      getAddress(
+          _currentPosition!.latitude ?? 0, _currentPosition?.longitude ?? 0);
     } catch (e) {}
   }
 
@@ -68,7 +68,7 @@ class HomeProvider extends ChangeNotifier {
       isWaiting = true;
 
       await getCurrentLocation();
-      
+
       isWaiting = false;
     } catch (e) {
       isWaiting = false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/providers/home_provider.dart';
+import 'package:parti_app/screens/event_detail_screen.dart';
 import 'package:parti_app/styles/text_style.dart';
 import 'package:parti_app/utils/search_delegate.dart';
 import 'package:provider/provider.dart';
@@ -64,105 +65,104 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  // Card(
-                  //   child: Container(
-                  //     width: MediaQuery.of(context).size.width / 1.1,
-                  //     height: 200,
-                  //     color: Colors.white,
-                  //     child: Column(
-                  //       children: [
-                  //         Container(
-                  //           height: 50,
-                  //           width: double.infinity,
-                  //           decoration: BoxDecoration(
-                  //             border: Border.all(
-                  //               color: Colors.grey[200] ?? Colors.black,
-                  //             ),
-                  //           ),
-                  //           child: Center(
-                  //             child: Text('Starting soon'),
-                  //           ),
-                  //         ),
-                  //         Row(
-                  //           children: [
-                  //             Expanded(
-                  //               child: Container(
-                  //                 height: 50,
-                  //                 decoration: BoxDecoration(
-                  //                   border: Border.all(
-                  //                     color: Colors.grey[200] ?? Colors.black,
-                  //                   ),
-                  //                 ),
-                  //                 child: Center(
-                  //                   child: Text('Today'),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //             Expanded(
-                  //               child: Container(
-                  //                 height: 50,
-                  //                 decoration: BoxDecoration(
-                  //                   border: Border.all(
-                  //                     color: Colors.grey[200] ?? Colors.black,
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         Row(
-                  //           children: [
-                  //             Expanded(
-                  //               child: Container(
-                  //                 height: 50,
-                  //                 decoration: BoxDecoration(
-                  //                   border: Border.all(
-                  //                     color: Colors.grey[200] ?? Colors.black,
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //             Expanded(
-                  //               child: Container(
-                  //                 height: 50,
-                  //                 decoration: BoxDecoration(
-                  //                   border: Border.all(
-                  //                     color: Colors.grey[200] ?? Colors.black,
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         Row(
-                  //           children: [
-                  //             Expanded(
-                  //               child: Container(
-                  //                 height: 50,
-                  //                 decoration: BoxDecoration(
-                  //                   border: Border.all(
-                  //                     color: Colors.grey[200] ?? Colors.black,
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //             Expanded(
-                  //               child: Container(
-                  //                 height: 50,
-                  //                 decoration: BoxDecoration(
-                  //                   border: Border.all(
-                  //                     color: Colors.grey[200] ?? Colors.black,
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-
+                  Card(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 1.1,
+                      height: 200,
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 50,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey[200] ?? Colors.black,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text('Starting soon'),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[200] ?? Colors.black,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text('Today'),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[200] ?? Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[200] ?? Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[200] ?? Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[200] ?? Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey[200] ?? Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Text(
                     "UPCOMING EVENTS NEARBY",
                     style: titleStyle,
@@ -171,7 +171,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 20,
                   ),
                   NearbyEventCard(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EventDetailScreen(),
+                        ),
+                      );
+                    },
                     image: image1,
                     location: "Kadikoy/Istanbul",
                     title: "Dudes Party",

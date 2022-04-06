@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/providers/user_provider.dart';
@@ -44,20 +46,33 @@ class MapScreenState extends State<ProfilePage>
     );
     return SafeArea(
       child: Scaffold(
-          backgroundColor: Color(0xffFDFFE5),
+          backgroundColor: Colors.white,
           appBar: AppBar(
-            backgroundColor: Colors.black,
-            title: Text(
-              'Profile',
-              style: GoogleFonts.jost(),
+            elevation: 0,
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Icon(
+                  Icons.person_outline_rounded,
+                  color: Colors.black,
+                ),
+                Text(
+                  'Profile',
+                  style: GoogleFonts.jost(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
             ),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              ),
-            ),
-            actions: [Icon(Icons.psychology_outlined)],
+            shape: Border(bottom: BorderSide(color: Colors.black, width: 1)),
+            actions: [
+              Icon(
+                Icons.psychology_outlined,
+                color: Colors.black,
+                size: 24,
+              )
+            ],
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
@@ -92,23 +107,42 @@ class MapScreenState extends State<ProfilePage>
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Container(
-                                    width: 140.0,
-                                    height: 140.0,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        image: NetworkImage(authProvider
-                                                    .currentUser!
-                                                    .profilePicture ==
-                                                null
-                                            ? "https://cdn1.vectorstock.com/i/1000x1000/82/55/anonymous-user-circle-icon-vector-18958255.jpg"
-                                            : authProvider.currentUser!
-                                                    .profilePicture ??
-                                                'https://cdn1.vectorstock.com/i/1000x1000/82/55/anonymous-user-circle-icon-vector-18958255.jpg'),
-                                        fit: BoxFit.cover,
+                                  // ClipOval(
+                                  //   child: authProvider
+                                  //               .currentUser!.profilePicture ==
+                                  //           null
+                                  //       ? SvgPicture.asset(
+                                  //           'assets/images/bowl.svg')
+                                  //       : CachedNetworkImage(
+                                  //           imageUrl: authProvider.currentUser!
+                                  //                   .profilePicture ??
+                                  //               '',
+                                  //           height: 140,
+                                  //           width: 140,
+                                  //           fit: BoxFit.contain,
+                                  //         ),
+                                  // )
+                                  CachedNetworkImage(
+                                    imageUrl: authProvider
+                                                .currentUser!.profilePicture ==
+                                            null
+                                        ? 'https://unsplash.com/photos/tpxnuebsy28'
+                                        : 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Lana_del_Rey.jpg',
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      width: 140.0,
+                                      height: 140.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
                                       ),
                                     ),
+                                    placeholder: (context, url) =>
+                                        CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
                                   ),
                                 ],
                               ),
@@ -131,7 +165,7 @@ class MapScreenState extends State<ProfilePage>
                                                 width: 400,
                                                 child: Column(children: [
                                                   ListTile(
-                                                    title: Text(
+                                                    title: const Text(
                                                         'Take your picture'),
                                                     onTap: () async {
                                                       authProvider.currentUser =
@@ -171,7 +205,7 @@ class MapScreenState extends State<ProfilePage>
                                           // await userProvider
                                           //     .changeProfilePicture();
                                         },
-                                        child: CircleAvatar(
+                                        child: const CircleAvatar(
                                           backgroundColor: Colors.white,
                                           radius: 20.0,
                                           child: Icon(
@@ -192,32 +226,40 @@ class MapScreenState extends State<ProfilePage>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.mode_of_travel_outlined,
-                              ),
-                              SizedBox(
+                              const Icon(Icons.mode_of_travel_outlined,
+                                  color: Color(0xff787878)),
+                              const SizedBox(
                                 width: 5,
                               ),
                               Text(
                                 homeProvider.addressTitle,
-                                style: GoogleFonts.jost(),
+                                style: GoogleFonts.jost(
+                                    color: Color(0xff787878), fontSize: 16),
                               ),
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.mark_as_unread_outlined,
+                                color: Color(0xff787878),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 5,
                               ),
                               Text(
                                 authProvider.currentUser!.email,
-                                style: GoogleFonts.jost(),
+                                style: GoogleFonts.jost(
+                                    color: Color(0xff787878), fontSize: 16),
                               ),
                             ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Divider(
+                            thickness: 2,
                           ),
                         ],
                       ),
