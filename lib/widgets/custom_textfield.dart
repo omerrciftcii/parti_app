@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String? val)? validator;
   final bool? isSecureText;
   final VoidCallback? suffixIconPressed;
+  final bool? readOnly;
   const CustomTextField({
     Key? key,
     required,
@@ -21,11 +22,13 @@ class CustomTextField extends StatelessWidget {
     this.inputType,
     this.suffixIconPressed,
     this.isSecureText,
+    this.readOnly,
   }) : super(key: key);
 //
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly ?? false,
       controller: controller,
       validator: validator,
       keyboardType: inputType,

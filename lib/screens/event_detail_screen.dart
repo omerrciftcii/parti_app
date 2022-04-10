@@ -6,22 +6,7 @@ import 'package:parti_app/widgets/custom_divider.dart';
 import '../ui_helpers/expandable_fab.dart';
 
 class EventDetailScreen extends StatelessWidget {
-  void _showAction(BuildContext context, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(''),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('CLOSE'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 
   const EventDetailScreen({Key? key}) : super(key: key);
 
@@ -47,32 +32,7 @@ class EventDetailScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: ExpandableFab(
-        distance: 90.0,
-        children: [
-          ActionButton(
-            onPressed: () => _showAction(context, 0),
-            icon: const Icon(
-              Icons.person_add_alt_outlined,
-              color: Colors.white,
-            ),
-          ),
-          ActionButton(
-            onPressed: () => _showAction(context, 1),
-            icon: const Icon(
-              Icons.message,
-              color: Colors.white,
-            ),
-          ),
-          ActionButton(
-            onPressed: () => _showAction(context, 2),
-            icon: const Icon(
-              Icons.map,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
+   
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,

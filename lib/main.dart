@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:parti_app/providers/auth_provider.dart';
+import 'package:parti_app/providers/event_provider.dart';
 import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/providers/user_provider.dart';
 import 'package:parti_app/screens/landing_screen.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider.instance()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

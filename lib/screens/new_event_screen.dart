@@ -1,0 +1,215 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:parti_app/providers/auth_provider.dart';
+import 'package:parti_app/providers/event_provider.dart';
+import 'package:parti_app/screens/address_selection_screen.dart';
+import 'package:parti_app/widgets/custom_button.dart';
+import 'package:parti_app/widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
+import 'package:country_state_city_picker/country_state_city_picker.dart';
+
+class NewEventScreen extends StatelessWidget {
+  const NewEventScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var eventProvider = Provider.of<EventProvider>(context);
+    var authProvider = Provider.of<AuthProvider>(context);
+    return Scaffold(
+      bottomSheet: Padding(
+        padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24),
+        child: SizedBox(
+          height: 50,
+          child: eventProvider.isWaiting
+              ? Center(child: CircularProgressIndicator())
+              : InkWell(
+                  onTap: () async {
+                    if (eventProvider.formKey.currentState!.validate()) {
+                      var response = await eventProvider
+                          .createEvent(authProvider.currentUser!.userId);
+                      if (response != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Event created successfully'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: CustomButton(
+                    backgroundColor: Colors.orange,
+                    text: 'Create Event',
+                    textStyle: GoogleFonts.jost(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: eventProvider.formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 72,
+              ),
+              Center(
+                child: Text(
+                  'Create Your Own Party!',
+                  style: GoogleFonts.jost(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 24.0, right: 24.0, bottom: 12, top: 12),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 10,
+                          child: FilterChip(
+                            label: Text('Home Party'),
+                            onSelected: (_) {
+                              eventProvider.isHomeParty = true;
+                            },
+                            selectedColor: Colors.orange,
+                            selected: eventProvider.isHomeParty,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: SizedBox(
+                            width: 10,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 8,
+                          child: FilterChip(
+                            label: Text('Club Party'),
+                            onSelected: (_) {
+                              eventProvider.isHomeParty = false;
+                            },
+                            selected: !eventProvider.isHomeParty,
+                            selectedColor: Colors.orange,
+                          ),
+                        ),
+                      ],
+                    ),
+                    CustomTextField(
+                      controller: eventProvider.titleController,
+                      hintText: 'Title',
+                      validator: (_) {},
+                    ),
+                    CustomTextField(
+                      controller: eventProvider.descriptionController,
+                      hintText: 'Description',
+                      validator: (_) {},
+                    ),
+
+                    SelectState(
+                      style: GoogleFonts.jost(),
+                      onCountryChanged: (value) {
+                        eventProvider.currentCountry = value;
+                      },
+                      onStateChanged: (value) {
+                        eventProvider.currentState = value;
+                      },
+                      onCityChanged: (value) {
+                        eventProvider.currentCity = value;
+                      },
+                    ),
+                    // InkWell(
+                    //   onTap:(){
+                    //     print('country selected is $countryValue');
+                    //     print('country selected is $stateValue');
+                    //     print('country selected is $cityValue');
+                    //   },
+                    //   child: Text(' Check')
+                    // )
+                    CustomTextField(
+                      controller: eventProvider.addressController,
+                      hintText: 'Address',
+                      validator: (address) {
+                        if (address!.isEmpty) {
+                          return 'Addres must be selected';
+                        }
+                      },
+                      suffixIcon: FaIcon(Icons.navigation_rounded),
+                      suffixIconPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AddressSelectionScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    CustomTextField(
+                      readOnly: true,
+                      controller: eventProvider.startDateController,
+                      hintText: 'Starting Date',
+                      validator: (address) {
+                        if (address!.isEmpty) {
+                          return 'Start date must be selected';
+                        }
+                      },
+                      suffixIcon: FaIcon(Icons.date_range),
+                      suffixIconPressed: () async {
+                        await eventProvider.selectDate(context, true);
+                      },
+                    ),
+                    CustomTextField(
+                      readOnly: true,
+                      controller: eventProvider.endDateController,
+                      hintText: 'End Date',
+                      validator: (address) {
+                        if (address!.isEmpty) {
+                          return 'End date must be selected';
+                        }
+                      },
+                      suffixIcon: FaIcon(Icons.date_range),
+                      suffixIconPressed: () async {
+                        await eventProvider.selectDate(context, false);
+                      },
+                    ),
+                    CustomTextField(
+                      readOnly: false,
+                      inputType: TextInputType.number,
+                      controller: eventProvider.maxParticipiantController,
+                      hintText: 'Max Participiants',
+                      validator: (address) {
+                        if (address!.isEmpty) {
+                          return 'Max Participiants must be selected';
+                        }
+                      },
+                      suffixIcon: FaIcon(Icons.people_sharp),
+                      suffixIconPressed: () async {
+                        await eventProvider.selectDate(context, false);
+                      },
+                    ),
+                    CustomTextField(
+                      readOnly: true,
+                      controller: eventProvider.imageController,
+                      hintText: 'Add Image',
+                      validator: (image) {},
+                      suffixIcon: FaIcon(Icons.image),
+                      suffixIconPressed: () async {
+                        await eventProvider.pickImage();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

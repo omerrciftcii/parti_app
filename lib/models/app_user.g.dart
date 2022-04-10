@@ -13,6 +13,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       isPremium: json['isPremium'] as bool?,
       profilePicture: json['profilePicture'] as String?,
       email: json['email'] as String,
+      provider: json['provider'] as String?,
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'email': instance.email,
       'profilePicture': instance.profilePicture,
       'isPremium': instance.isPremium,
+      'provider': instance.provider,
     };

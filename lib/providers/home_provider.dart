@@ -9,6 +9,14 @@ class HomeProvider extends ChangeNotifier {
   String get addressTitle => _addressTitle;
   bool _isWaiting = false;
   bool get isWaiting => _isWaiting;
+  late TabController _tabController;
+
+  TabController get homeTabController => _tabController;
+  set homeTabController(value) {
+    _tabController = value;
+    notifyListeners();
+  }
+
   set isWaiting(value) {
     _isWaiting = value;
     notifyListeners();

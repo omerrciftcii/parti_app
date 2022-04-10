@@ -1,14 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../styles/text_style.dart';
 import '../utils/ui_helper.dart';
 
-class NearbyEventCard extends StatelessWidget {
+class EventCard extends StatelessWidget {
   final VoidCallback? onTap;
   final String title;
   final String location;
   final String image;
-  const NearbyEventCard(
+  const EventCard(
       {Key? key,
       required this.onTap,
       required this.title,
@@ -40,13 +42,15 @@ class NearbyEventCard extends StatelessWidget {
         color: imgBG,
         width: 80,
         height: 100,
-        child: Hero(
-          tag: "",
-          child: Image.network(
-            image,
-            fit: BoxFit.cover,
-          ),
-        ),
+        child: image == ''
+            ? Image.network(
+                "https://www.pinclipart.com/picdir/middle/50-506519_text-clipart-free-for-download-unknown-icon-png.png",
+                fit: BoxFit.contain,
+              )
+            : Image.memory(
+                base64Decode(image),
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }
