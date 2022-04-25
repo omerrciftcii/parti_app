@@ -54,7 +54,14 @@ dependencies:
   flutter_svg: ^1.0.3
   country_state_city_picker: ^1.2.8
   google_maps_flutter: ^2.1.3
-  
+  image: ^3.1.3
+  sendgrid_mailer: ^0.1.3
+  intl: ^0.17.0
+  lottie: ^1.3.0  
+  carousel_slider: ^4.0.0
+  firebase_messaging: ^11.2.13
+  flutter_local_notifications: ^9.4.0
+  sliding_up_panel: ^2.0.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -84,6 +91,18 @@ flutter:
     - assets/images/parti_app_background.jpg
     - assets/images/bowl.svg
     - assets/icons/picker.png
+    - assets/lottie/waiting.json
+    - assets/icons/logo.svg
+    - assets/icons/party-time.png
+    - assets/images/arabica-148 1.svg
+    - assets/images/arabica-148 1.png
+    - assets/images/home_party.png
+    - assets/images/club_party.png
+
+
+
+
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

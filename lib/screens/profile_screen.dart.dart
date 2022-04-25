@@ -5,9 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/providers/user_provider.dart';
+import 'package:parti_app/screens/my_events_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
+import '../widgets/waiting_indicator.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -140,15 +142,15 @@ class MapScreenState extends State<ProfilePage>
                                       ),
                                     ),
                                     placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
+                                        const CustomWaitingIndicator(),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
                                   ),
                                 ],
                               ),
                               Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 105.0, right: 120.0),
+                                  padding: const EdgeInsets.only(
+                                      top: 105.0, right: 120.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -182,7 +184,7 @@ class MapScreenState extends State<ProfilePage>
                                                     },
                                                   ),
                                                   ListTile(
-                                                    title: Text(
+                                                    title: const Text(
                                                         'Take from gallery'),
                                                     onTap: () async {
                                                       authProvider.currentUser =
@@ -255,11 +257,28 @@ class MapScreenState extends State<ProfilePage>
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Divider(
+                          const Divider(
                             thickness: 2,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ListTile(
+                            title: Text(
+                              'My Events',
+                              style: GoogleFonts.jost(),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => MyCreatedEvents(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

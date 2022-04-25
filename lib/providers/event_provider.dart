@@ -5,10 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:parti_app/constants/constants.dart';
+import 'package:parti_app/helpers/email_helper.dart';
+import 'package:parti_app/models/comment_model.dart';
 import 'package:parti_app/models/event_model.dart';
 import 'package:parti_app/models/failure.dart';
 import 'package:parti_app/services/event_service.dart';
-
+import 'package:sendgrid_mailer/sendgrid_mailer.dart';
+import 'package:http/http.dart' as http;
 import '../models/place_search.dart';
 
 class EventProvider extends ChangeNotifier {
@@ -19,6 +23,56 @@ class EventProvider extends ChangeNotifier {
   bool get isWaiting => _isWaiting;
   Future<List<EventModel>>? _eventListFuture;
   Future<List<EventModel>>? get eventListFuture => _eventListFuture;
+  Future<EventModel>? _eventDetailFuture;
+  Future<List<EventModel>>? _myCreatedEventsFuture;
+  Future<List<EventModel>>? _futureEventsFuture;
+  Future<List<EventModel>>? get futureEventsFuture => _futureEventsFuture;
+  Future<List<EventModel>>? _myAttendingParties;
+  Future<List<EventModel>>? get myAttendingParties => _myAttendingParties;
+
+  Future<List<CommentModel>>? _getCommentsFuture;
+  Future<List<CommentModel>>? get getCommentsFuture => _getCommentsFuture;
+  set getCommentsFuture(value) {
+    _getCommentsFuture = value;
+    notifyListeners();
+  }
+
+  late TabController _commentsTabController;
+  int _selectedTabIndex = 0;
+  int get selectedTabIndex => _selectedTabIndex;
+  set selectedTabIndex(value) {
+    _selectedTabIndex = value;
+    notifyListeners();
+  }
+
+  TabController get commnetsTabController => _commentsTabController;
+  set commnetsTabController(value) {
+    _commentsTabController = value;
+    notifyListeners();
+  }
+
+  set myAttendingParties(value) {
+    _myAttendingParties = value;
+    notifyListeners();
+  }
+
+  set futureEventsFuture(value) {
+    _futureEventsFuture = value;
+    notifyListeners();
+  }
+
+  Future<List<EventModel>>? get myCreatedEventsFuture => _myCreatedEventsFuture;
+  set myCreatedEventsFuture(value) {
+    _myCreatedEventsFuture = value;
+    notifyListeners();
+  }
+
+  Future<EventModel>? get eventDetailFuture => _eventDetailFuture;
+  set eventDetailFuture(value) {
+    _eventDetailFuture = value;
+    notifyListeners();
+  }
+
   final _formKey = GlobalKey<FormState>();
   GlobalKey<FormState> get formKey => _formKey;
   set eventListFuture(value) {
@@ -163,7 +217,8 @@ class EventProvider extends ChangeNotifier {
   Future<void> pickImage() async {
     final XFile? image;
 
-    image = await _picker.pickImage(source: ImageSource.gallery);
+    image =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 0);
     if (image != null) {
       var convertedImage = File(image.path);
       List<int> imageBytes = convertedImage.readAsBytesSync();
@@ -173,7 +228,8 @@ class EventProvider extends ChangeNotifier {
     }
   }
 
-  Future<EventModel> createEvent(String userId) async {
+  Future<EventModel> createEvent(
+      String userId, String eventOwnerName, String eventOwnerPicture) async {
     isWaiting = true;
     try {
       var event = EventModel(
@@ -191,9 +247,13 @@ class EventProvider extends ChangeNotifier {
         eventOwnerId: userId,
         participiantsLeft: int.parse(maxParticipiantController.text) - 1,
         eventPicture: selectedEventPicture,
+        eventOwnerName: eventOwnerName,
+        eventOwnerPicture: eventOwnerPicture,
+        participiants: [],
       );
       var response = await EventService.createEvent(event);
       isWaiting = false;
+
       return response;
     } catch (e) {
       isWaiting = false;
@@ -202,4 +262,92 @@ class EventProvider extends ChangeNotifier {
       );
     }
   }
+
+  Future<bool> joinParty({
+    required String eventId,
+    required String eventTitle,
+    required String eventDescription,
+    required String partyOwnerName,
+    required String dateTime,
+    required String place,
+    required String address,
+    required String participiantId,
+    required List<String> participiants,
+    required List<String> attents,
+    required String participantName,
+  }) async {
+    isWaiting = true;
+    var headers = {
+      'Authorization':
+          'Bearer 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',
+      'Content-Type': 'application/json',
+    };
+
+    var data = {
+      "from": {"email": "omerrcftcc@gmail.com"},
+      "personalizations": [
+        {
+          "to": [
+            {"email": "shamkhalbaghishov@gmail.com"}
+          ],
+          "subject": "Party Invitation",
+        }
+      ],
+      "content": [
+        {
+          "type": "text/html",
+          "value": EmailHelper.htmlHelper(
+            partyName: eventTitle,
+            partyOwnerName: partyOwnerName,
+            dateTime: dateTime,
+            place: place,
+            address: address,
+            participant: participantName,
+          ),
+        }
+      ],
+    };
+    try {
+      var url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
+      var res = await http.post(url, headers: headers, body: jsonEncode(data));
+      attents.add(eventId);
+      if (res.statusCode != 202) {
+        isWaiting = false;
+        return false;
+      }
+      participiants.add(participiantId);
+      await EventService.joinEvent(
+        eventId,
+        participiants,
+        attents,
+        participiantId,
+      );
+      isWaiting = false;
+      return true;
+    } catch (e) {
+      isWaiting = false;
+      return false;
+    }
+  }
+
+  Future<bool> cancelEvent({required EventModel event}) async {
+    try {
+      isWaiting = true;
+      var response =
+          await EventService.cancelEvent(eventId: event.eventId ?? '');
+
+      if (response == true) {
+        isWaiting = false;
+        return true;
+      } else {
+        isWaiting = false;
+        return false;
+      }
+    } catch (e) {
+      isWaiting = false;
+      return false;
+    }
+  }
+  //Email sender
+
 }

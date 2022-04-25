@@ -9,6 +9,8 @@ import 'package:parti_app/widgets/custom_button.dart';
 import 'package:parti_app/widgets/custom_textfield.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/waiting_indicator.dart';
+
 class RegisterWithEmailScreen extends StatelessWidget {
   RegisterWithEmailScreen({Key? key}) : super(key: key);
   var ageList = [for (var i = 18; i < 99; i += 1) i];
@@ -253,7 +255,7 @@ class RegisterWithEmailScreen extends StatelessWidget {
                       });
                 }),
             authProvider.status == Status.authenticating
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: CustomWaitingIndicator())
                 : GestureDetector(
                     onTap: () async {
                       try {
@@ -263,7 +265,8 @@ class RegisterWithEmailScreen extends StatelessWidget {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => BottomNavigationBarWidget(),
+                              builder: (_) =>
+                                  BottomNavigationBarWidget(index: 0),
                             ),
                           );
                         }

@@ -14,6 +14,9 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       profilePicture: json['profilePicture'] as String?,
       email: json['email'] as String,
       provider: json['provider'] as String?,
+      attents:
+          (json['attents'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      deviceToken: json['deviceToken'] as String?,
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
@@ -24,4 +27,6 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'profilePicture': instance.profilePicture,
       'isPremium': instance.isPremium,
       'provider': instance.provider,
+      'attents': instance.attents,
+      'deviceToken': instance.deviceToken,
     };

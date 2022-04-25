@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:parti_app/models/filter_model.dart';
 import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/providers/home_provider.dart';
-import 'package:parti_app/screens/event_detail_screen.dart';
 import 'package:parti_app/screens/event_list_screen.dart';
-import 'package:parti_app/screens/new_event_screen.dart';
-import 'package:parti_app/styles/text_style.dart';
-import 'package:parti_app/utils/search_delegate.dart';
 import 'package:provider/provider.dart';
-
-import '../constants/app_colors.dart';
 import '../ui_helpers/expandable_fab.dart';
-import '../widgets/event_card_widget.dart';
+import 'new_event_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final int index;
+  
+  const HomeScreen({Key? key, required this.index}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
     var authProvider = Provider.of<AuthProvider>(context, listen: false);
-    homeProvider.homeTabController = TabController(vsync: this, length: 2);
+    homeProvider.homeTabController =
+        TabController(vsync: this, length: 2, initialIndex: widget.index,);
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       homeProvider.initializeSettings();
@@ -116,14 +114,20 @@ class _HomeScreenState extends State<HomeScreen>
             Expanded(
               flex: 10,
               child: TabBarView(
-                  controller: homeProvider.homeTabController,
-                  children: [
-                    Center(
-                      child: EventListScreen(),
+                controller: homeProvider.homeTabController,
+                children: [
+                  Center(
+                    child: EventListScreen(
+                        filters: FilterModel(isHomeParty: false)),
+                  ),
+                  Center(
+                    child: EventListScreen(
+                      filters: FilterModel(isHomeParty: true),
                     ),
-                    Text('asdasdasd'),  
-                  ],),
-            )
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -131,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
     // return Scaffold(
     //   body: homeProvider.isWaiting
     //       ? Center(
-    //           child: CircularProgressIndicator(),
+    //           child: CustomWaitingIndicator(),
     //         )
     //       : Padding(
     //           padding: const EdgeInsets.only(left: 18, right: 18, top: 48),

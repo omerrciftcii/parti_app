@@ -4,6 +4,7 @@ import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/providers/event_provider.dart';
 import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/providers/user_provider.dart';
+import 'package:parti_app/screens/entrance_screen.dart';
 import 'package:parti_app/screens/landing_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const LandingScreen(),
+        home:  EntranceScreen(),
       ),
     );
   }

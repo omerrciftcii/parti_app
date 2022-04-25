@@ -3,43 +3,54 @@ import 'package:flutter/material.dart';
 import 'package:parti_app/screens/home_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import '../screens/settings_screen.dart';
-import '../screens/temp_screen.dart';
+import '../screens/profile_screen.dart.dart';
+import '../screens/explore_screen.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
-  BottomNavigationBarWidget({Key? key}) : super(key: key);
+  final int index;
+  BottomNavigationBarWidget({required this.index});
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-          icon: Icon(Icons.cottage_outlined),
-          title: ("Home"),
-          activeColorPrimary: Color(0xffD8A64D),
-          inactiveColorPrimary: Colors.black),
+        icon: Icon(Icons.cottage_outlined),
+        title: ("Home"),
+        activeColorPrimary: Color(0xffD8A64D),
+        inactiveColorPrimary: Color(0xff787878),
+      ),
       PersistentBottomNavBarItem(
-          icon: Icon(Icons.travel_explore),
-          title: ("Home"),
-          activeColorPrimary: Color(0xffD8A64D),
-          inactiveColorPrimary: Colors.black),
+        icon: Icon(Icons.travel_explore),
+        title: ("Home"),
+        activeColorPrimary: Color(0xffD8A64D),
+        inactiveColorPrimary: Color(0xff787878),
+      ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.settings_accessibility),
         title: ("Profile"),
         activeColorPrimary: Color(0xffD8A64D),
-        inactiveColorPrimary: Colors.black,
+        inactiveColorPrimary: Color(0xff787878),
       ),
     ];
   }
 
   List<Widget> _buildScreens() {
-    return [HomeScreen(), TempWidget(), ProfilePage()];
+    return [
+      HomeScreen(
+        index: index,
+      ),
+      ExploreScreen(),
+      ProfilePage()
+    ];
   }
 
-  PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
+  PersistentTabController _controller = PersistentTabController(
+    initialIndex: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
       context,
+
       controller: _controller,
       screens: _buildScreens(),
       items: _navBarsItems(),
@@ -48,7 +59,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
       handleAndroidBackButtonPress: true, // Default is true.
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
+      stateManagement: false, // Default is true.
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(

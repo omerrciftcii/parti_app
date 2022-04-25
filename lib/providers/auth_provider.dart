@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:parti_app/models/app_user.dart';
@@ -120,11 +121,16 @@ class AuthProvider extends ChangeNotifier {
       var result = await _auth.createUserWithEmailAndPassword(
           email: registerEmailController.text,
           password: registerPasswordController.text);
+      String? deviceToken = await FirebaseMessaging.instance.getToken();
+
       await AuthService.addUserToDb(
         AppUser(
-            name: _registerNameController.text,
-            userId: result.user!.uid,
-            email: result.user?.email ?? ''),
+          name: _registerNameController.text,
+          userId: result.user!.uid,
+          email: result.user?.email ?? '',
+          attents: [],
+          deviceToken: deviceToken,
+        ),
       );
       isUserAddedToAuth = true;
       signIn(_registerEmailController.text, _registerPasswordController.text);
@@ -155,13 +161,16 @@ class AuthProvider extends ChangeNotifier {
         idToken: googleAuth.idToken,
       );
       var result = await _auth.signInWithCredential(credential);
+      String? deviceToken = await FirebaseMessaging.instance.getToken();
       if (_auth.currentUser?.uid != null) {
         if (!await AuthService.isUserExist(_auth.currentUser!.uid)) {
           currentUser = await AuthService.addUserToDb(
             AppUser(
-                name: result.user!.displayName ?? 'Unknown',
-                userId: result.user!.uid,
-                email: user?.email ?? ''),
+              name: result.user!.displayName ?? 'Unknown',
+              userId: result.user!.uid,
+              email: user?.email ?? '',
+              deviceToken: deviceToken,
+            ),
           );
         } else {
           currentUser =

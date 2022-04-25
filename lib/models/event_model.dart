@@ -3,10 +3,11 @@ part 'event_model.g.dart';
 
 @JsonSerializable()
 class EventModel {
+  String? eventId;
   String? title;
   String? description;
   String? country;
-  String? state;
+  int? state;
   String? city;
   String? address;
   DateTime? startDate;
@@ -18,6 +19,9 @@ class EventModel {
   int? participiantsLeft;
   String? eventOwnerId;
   String? eventPicture;
+  String? eventOwnerName;
+  String? eventOwnerPicture;
+  List<String> participiants = [];
 
   EventModel({
     required this.title,
@@ -35,6 +39,10 @@ class EventModel {
     required this.participiantsLeft,
     required this.eventOwnerId,
     this.eventPicture,
+    required this.eventOwnerName,
+    required this.eventOwnerPicture,
+    this.eventId,
+    required this.participiants,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) =>

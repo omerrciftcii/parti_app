@@ -1,13 +1,12 @@
-class Constants {
-  static List<String> genderList = [
-    'Man',
-    'Woman',
-    'Other',
-  ];
-  static String googleApiKey = "AIzaSyBqaz1AuXkSCdVqvL9StfCe2x6hjAMwg8M";
-
-  static String htmlBody = """
-
+class EmailHelper {
+  static String htmlHelper(
+      {required String partyName,
+      required String partyOwnerName,
+      required String dateTime,
+      required String place,
+      required String address,
+      required String participant}) {
+    String html = """
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="width:100%;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0"> 
  <head> 
@@ -107,7 +106,7 @@ td .es-button-border-1566986321449:hover {
                   <td align="center" valign="top" style="padding:0;Margin:0;width:560px"> 
                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                      <tr style="border-collapse:collapse"> 
-                      <td class="es-infoblock es-m-txt-c" align="center" style="padding:0;Margin:0;line-height:13px;font-size:11px;color:#CCCCCC"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:13px;color:#CCCCCC;font-size:11px">Put your preheader text here</p></td> 
+                      <td class="es-infoblock es-m-txt-c" align="center" style="padding:0;Margin:0;line-height:13px;font-size:11px;color:#CCCCCC"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:13px;color:#CCCCCC;font-size:13px">PartyUp</p></td> 
                      </tr> 
                    </table></td> 
                  </tr> 
@@ -127,10 +126,10 @@ td .es-button-border-1566986321449:hover {
                   <td class="es-m-p20b" align="left" style="padding:0;Margin:0;width:225px"> 
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                      <tr style="border-collapse:collapse"> 
-                      <td align="center" style="padding:10px;Margin:0"><h1 class="b_title" style="Margin:0;line-height:41px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:27px;font-style:normal;font-weight:bold;color:#ffffff">Kokos Fluo Party,&nbsp;</h1></td> 
+                      <td align="center" style="padding:10px;Margin:0"><h1 class="b_title" style="Margin:0;line-height:41px;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;font-size:27px;font-style:normal;font-weight:bold;color:#ffffff">$partyName,&nbsp;</h1></td> 
                      </tr> 
                      <tr style="border-collapse:collapse"> 
-                      <td align="center" style="padding:0;Margin:0;padding-top:10px"><p class="b_description" style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:18px;color:#ffffff;font-size:12px">Hello Friends,<br><br>This is the confirmation mail for tonight's Kokos Fluo party, which will start from 23.30 at Kokos Disco, via della civiltà Romana 1.<br><br>Thank you and enjoy the party!!!</p></td> 
+                      <td align="center" style="padding:0;Margin:0;padding-top:10px"><p class="b_description" style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:18px;color:#ffffff;font-size:12px">Hello $participant,<br><br>This is the confirmation mail for $partyName, which will start from $dateTime at $place, via $address<br><br>Thank you and enjoy the party!!!</p></td> 
                      </tr> 
                    </table></td> 
                  </tr> 
@@ -140,7 +139,7 @@ td .es-button-border-1566986321449:hover {
                   <td class="es-m-p0r" valign="top" align="center" style="padding:0;Margin:0;width:315px"> 
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                      <tr style="border-collapse:collapse"> 
-                      <td align="left" style="padding:0;Margin:0"><img class="adapt-img" src="https://wbksbb.stripocdn.email/content/guids/CABINET_a4de511e085fc699b9cccdbe805f5474/images/72741557996658358.jpg" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="315"></td> 
+                      <td align="left" style="padding:0;Margin:0"><img class="adapt-img" src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F184375039%2F474927372937%2F1%2Foriginal.20211111-155142?w=512&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C236%2C4724%2C2362&s=ff52e826c551abbd9a90a39cccc5c303" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="315" height:"300"></td> 
                      </tr> 
                    </table></td> 
                  </tr> 
@@ -225,5 +224,8 @@ td .es-button-border-1566986321449:hover {
   </div>  
  </body>
 </html>
- """;
+""";
+
+    return html;
+  }
 }

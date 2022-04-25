@@ -7,10 +7,12 @@ class FilterModel {
   String? city;
   String? query;
 
+  bool isHomeParty;
   FilterModel({
     this.city,
     this.eventPerPage,
     this.query,
+    required this.isHomeParty,
   });
 
   factory FilterModel.fromJson(Map<String, dynamic> json) =>

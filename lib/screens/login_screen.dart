@@ -9,6 +9,8 @@ import 'package:parti_app/widgets/custom_textfield.dart';
 import 'package:parti_app/widgets/social_media_button.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/waiting_indicator.dart';
+
 class LoginScreen extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -147,7 +149,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             authProvider.status == Status.authenticating
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CustomWaitingIndicator())
                 : GestureDetector(
                     onTap: () async {
                       try {

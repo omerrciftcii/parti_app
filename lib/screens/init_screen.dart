@@ -7,6 +7,8 @@ import '../widgets/custom_button.dart';
 import 'home_screen.dart';
 
 class InitScreen extends StatelessWidget {
+  final int index;
+  InitScreen({required this.index});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,7 +68,7 @@ class InitScreen extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => HomeScreen(),
+                    builder: (_) => HomeScreen(index: index),
                   ),
                 );
               },

@@ -11,6 +11,8 @@ class AppUser {
   String? profilePicture;
   bool? isPremium;
   String? provider;
+  List<String>? attents = [];
+  String? deviceToken;
 
   AppUser(
       {required this.name,
@@ -18,7 +20,10 @@ class AppUser {
       this.age,
       this.isPremium,
       this.profilePicture,
-      required this.email, this.provider});
+      required this.email,
+      this.provider,
+      this.attents,
+      required this.deviceToken});
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
       _$AppUserFromJson(json);

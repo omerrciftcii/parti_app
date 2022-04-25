@@ -6,10 +6,13 @@ import 'package:parti_app/screens/splash_screen.dart';
 import 'package:parti_app/widgets/bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/waiting_indicator.dart';
+import 'entrance_screen.dart';
 import 'home_screen.dart';
 
 class LandingScreen extends StatelessWidget {
-  const LandingScreen({Key? key}) : super(key: key);
+  final int index;
+  LandingScreen({required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +21,22 @@ class LandingScreen extends StatelessWidget {
       case Status.uninitialized:
         return SplashScreen();
       case Status.unauthenticated:
-        return InitScreen();
+        return InitScreen(
+          index: index,
+        );
       case Status.authenticating:
         return Center(
-          child: CircularProgressIndicator(),
+          child: CustomWaitingIndicator(),
         );
       case Status.authenticated:
-        return BottomNavigationBarWidget();
+        return BottomNavigationBarWidget(
+          index: index,
+        );
 
       default:
-        return InitScreen();
+        return InitScreen(
+          index: index,
+        );
     }
   }
 }
