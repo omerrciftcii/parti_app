@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:parti_app/models/comment_model.dart';
 import 'package:parti_app/models/event_model.dart';
 import 'package:parti_app/models/filter_model.dart';
+import 'package:parti_app/screens/event_list_screen.dart';
 
 class EventService {
   static FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -199,12 +200,58 @@ class EventService {
             toFirestore: (movie, _) => movie.toJson(),
           )
           .get();
-
-      for (var element in events.docs) {
-        commentList.add(element.data());
+      if (events.docs.isNotEmpty) {
+        for (var element in events.docs) {
+          commentList.add(element.data());
+        }
+      } else {
+        print('asdasd');
       }
 
       return commentList;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<CommentModel>? addComment(
+      {required CommentModel comment, required bool isReview}) async {
+    try {
+      await _firebaseFirestore
+          .collection('events')
+          .doc(comment.eventId)
+          .collection(isReview ? 'reviews' : 'questions')
+          .doc()
+          .set(
+            comment.toJson(),
+          );
+
+      return comment;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<List<EventModel>> searchEvent({required String query}) async {
+    try {
+      List<EventModel> eventList = [];
+      var response = await _firebaseFirestore
+          .collection('events')
+          .where('title', isGreaterThanOrEqualTo: query)
+          .where('title', isLessThan: query + 'z')
+          .withConverter<EventModel>(
+            fromFirestore: (snapshots, _) =>
+                EventModel.fromJson(snapshots.data()!),
+            toFirestore: (event, _) => event.toJson(),
+          )
+          .get();
+      if (response.docs.isNotEmpty) {
+        for (var element in response.docs) {
+          eventList.add(element.data());
+        }
+      } else {}
+
+      return eventList;
     } catch (e) {
       throw Exception(e);
     }

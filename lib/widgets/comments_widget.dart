@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/models/comment_model.dart';
 import 'package:parti_app/providers/event_provider.dart';
 import 'package:parti_app/services/event_service.dart';
+import 'package:parti_app/utils/datetime_helper.dart';
 import 'package:parti_app/widgets/waiting_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -46,33 +48,49 @@ class _CommentsWidgetState extends State<CommentsWidget> {
             snapshot.hasError == false &&
             snapshot.data!.isNotEmpty) {
           return ListView.builder(
+              itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-            return Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  UserDetailsWithFollow(
-                    key:
-                        ValueKey("${CommentsListKeyPrefix.commentUser} $index"),
-                    userData: commentData.user,
+                return Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              snapshot.data![index].reviewerProfilePicture),
+                        ),
+                        title: Text(
+                          snapshot.data![index].reviewerName,
+                          style: GoogleFonts.jost(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          DateTimeHelper.getDateTime(
+                              snapshot.data![index].createdDate),
+                          style: GoogleFonts.jost(color: Colors.grey),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text(
+                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                          style: GoogleFonts.jost(color: Colors.grey[700]),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    commentData.comment,
-                    key:
-                        ValueKey("${CommentsListKeyPrefix.commentText} $index"),
-                    textAlign: TextAlign.left,
-                  ),
-                  Divider(
-                    key: ValueKey(
-                        "${CommentsListKeyPrefix.commentDivider} $index"),
-                    color: Colors.black45,
-                  ),
-                ],
-              ),
-            );
-          });
+                );
+              });
+        } else if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData == true &&
+            snapshot.data!.isEmpty &&
+            snapshot.error == null) {
+          return Center(
+            child: Text('There is no comment'),
+          );
+        } else {
+          throw Exception(snapshot.error);
         }
       },
     );

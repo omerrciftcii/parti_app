@@ -10,7 +10,7 @@ import 'new_event_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int index;
-  
+
   const HomeScreen({Key? key, required this.index}) : super(key: key);
 
   @override
@@ -23,8 +23,11 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
     var authProvider = Provider.of<AuthProvider>(context, listen: false);
-    homeProvider.homeTabController =
-        TabController(vsync: this, length: 2, initialIndex: widget.index,);
+    homeProvider.homeTabController = TabController(
+      vsync: this,
+      length: 2,
+      initialIndex: widget.index,
+    );
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       homeProvider.initializeSettings();
@@ -98,13 +101,13 @@ class _HomeScreenState extends State<HomeScreen>
                 tabs: [
                   Tab(
                     child: Text(
-                      'Home Parties',
+                      'Club Parties',
                       style: GoogleFonts.jost(color: Colors.black),
                     ),
                   ),
                   Tab(
                     child: Text(
-                      'Club Parties',
+                      'Home Parties',
                       style: GoogleFonts.jost(color: Colors.black),
                     ),
                   ),
@@ -118,12 +121,12 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   Center(
                     child: EventListScreen(
-                        filters: FilterModel(isHomeParty: false)),
+                      filters: FilterModel(isHomeParty: true),
+                    ),
                   ),
                   Center(
                     child: EventListScreen(
-                      filters: FilterModel(isHomeParty: true),
-                    ),
+                        filters: FilterModel(isHomeParty: false)),
                   ),
                 ],
               ),

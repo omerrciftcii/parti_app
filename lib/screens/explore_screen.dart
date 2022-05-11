@@ -3,9 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:parti_app/models/event_model.dart';
 import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/providers/event_provider.dart';
+import 'package:parti_app/screens/event_detail_screen.dart';
+import 'package:parti_app/screens/search_screen.dart';
 import 'package:parti_app/services/event_service.dart';
 import 'package:parti_app/widgets/new_event_card_widget.dart';
 import 'package:parti_app/widgets/waiting_indicator.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -37,9 +40,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          title: Image.asset(
-            'assets/icons/party-time.png',
-            width: 50,
+          actions: [
+            IconButton(
+              onPressed: () {
+                pushNewScreen(context, screen: SearchPage(), withNavBar: false);
+              },
+              icon: Icon(
+                Icons.search,
+                color: Colors.orange,
+              ),
+            )
+          ],
+          title: Text(
+            'PartyUp',
+            style: GoogleFonts.jost(color: Colors.black),
           ),
           shape: Border(bottom: BorderSide(color: Colors.grey, width: 0.8)),
           centerTitle: true,
@@ -62,6 +76,140 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Card(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          height: 200,
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 50,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey[200] ?? Colors.black,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Starting soon',
+                                    style: GoogleFonts.jost(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              Colors.grey[200] ?? Colors.black,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Today',
+                                          style: GoogleFonts.jost(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              Colors.grey[200] ?? Colors.black,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Tomorrow',
+                                          style: GoogleFonts.jost(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              Colors.grey[200] ?? Colors.black,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'This Week',
+                                          style: GoogleFonts.jost(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              Colors.grey[200] ?? Colors.black,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Next Week',
+                                          style: GoogleFonts.jost(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              Colors.grey[200] ?? Colors.black,
+                                        ),
+                                      ),
+                                      child: Center(
+                                          child: Text(
+                                        'All Upcoming',
+                                        style: GoogleFonts.jost(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       Text(
                         'Future Events!',
                         style: GoogleFonts.jost(
@@ -90,10 +238,21 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     child: Stack(
                                       fit: StackFit.passthrough,
                                       children: [
-                                        NewEventCardWidget(
-                                          event: snapshot.data![index],
-                                          width: 130,
-                                          height: 160,
+                                        GestureDetector(
+                                          onTap: () {
+                                            pushNewScreen(context,
+                                                screen: EventDetailScreen(
+                                                    eventID: snapshot
+                                                            .data![index]
+                                                            .eventId ??
+                                                        ''),
+                                                withNavBar: false);
+                                          },
+                                          child: NewEventCardWidget(
+                                            event: snapshot.data![index],
+                                            width: 130,
+                                            height: 160,
+                                          ),
                                         ),
                                         Positioned(
                                             width: 130,
@@ -162,10 +321,21 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         padding: const EdgeInsets.only(
                                           top: 10.0,
                                         ),
-                                        child: NewEventCardWidget(
-                                          event: snapshot.data![index],
-                                          width: double.infinity,
-                                          height: 120,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            pushNewScreen(context,
+                                                screen: EventDetailScreen(
+                                                    eventID: snapshot
+                                                            .data![index]
+                                                            .eventId ??
+                                                        ''),
+                                                withNavBar: false);
+                                          },
+                                          child: NewEventCardWidget(
+                                            event: snapshot.data![index],
+                                            width: double.infinity,
+                                            height: 120,
+                                          ),
                                         ),
                                       );
                                     },

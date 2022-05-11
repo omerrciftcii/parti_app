@@ -5,7 +5,6 @@ import 'package:parti_app/providers/event_provider.dart';
 import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/providers/user_provider.dart';
 import 'package:parti_app/screens/entrance_screen.dart';
-import 'package:parti_app/screens/landing_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

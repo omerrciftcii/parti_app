@@ -2,32 +2,34 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:parti_app/constants/constants.dart';
+import 'package:parti_app/models/city_search_model.dart';
 
 import '../models/suggestion_model.dart';
 
 class GoogleServices {
   static final client = Client();
 
-  static Future<List<SuggestionModel>> fetchSuggestions(
+  static Future<List<CitySearchModel>> fetchSuggestions(
       String input, String lang) async {
     final request =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&language=$lang&components=country:ch&key=${Constants.googleApiKey}';
-    final response = await client.get(Uri.parse(request));
-
-    if (response.statusCode == 200) {
-      final result = json.decode(response.body);
-      if (result['status'] == 'OK') {
+        'https://spott.p.rapidapi.com/places/autocomplete?limit=10&skip=0&q=$input&type=CITY';
+    final response = await client.get(Uri.parse(request), headers: {
+      'X-RapidAPI-Key': '9a8bc81ea3msheebc51b0e9fe75fp13815djsn82b774a030f1'
+    });
+    try {
+      if (response.statusCode == 200) {
+        final result = json.decode(response.body);
         // compose suggestions in a list
-        return result['predictions']
-            .map<SuggestionModel>((p) => SuggestionModel(p['place_id'], p['description']))
+        var cityList = (json.decode(response.body) as List)
+            .map((i) => CitySearchModel.fromJson(i))
             .toList();
+        print('asd');
+        return cityList;
+      } else {
+        throw Exception('Failed to fetch suggestion');
       }
-      if (result['status'] == 'ZERO_RESULTS') {
-        return [];
-      }
-      throw Exception(result['error_message']);
-    } else {
-      throw Exception('Failed to fetch suggestion');
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

@@ -5,12 +5,18 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final FaIcon? prefixIcon;
-  final FaIcon? suffixIcon;
+  final Widget? suffixIcon;
   final TextInputType? inputType;
   final String? Function(String? val)? validator;
   final bool? isSecureText;
   final VoidCallback? suffixIconPressed;
+  final VoidCallback? prefixIconPressed;
+
   final bool? readOnly;
+  final int? maxLine;
+  final int? maxCharacter;
+  final int? minCharacter;
+  final VoidCallback? onTap;
   const CustomTextField({
     Key? key,
     required,
@@ -18,11 +24,16 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     this.prefixIcon,
     this.suffixIcon,
+    this.prefixIconPressed,
     required this.validator,
     this.inputType,
     this.suffixIconPressed,
     this.isSecureText,
     this.readOnly,
+    this.maxLine,
+    this.maxCharacter,
+    this.minCharacter,
+    this.onTap,
   }) : super(key: key);
 //
   @override
@@ -30,9 +41,13 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       readOnly: readOnly ?? false,
       controller: controller,
+      onTap: onTap,
       validator: validator,
       keyboardType: inputType,
       obscureText: isSecureText ?? false,
+      maxLines: maxLine ?? 1,
+      maxLength: maxCharacter,
+      minLines: 1,
       decoration: InputDecoration(
         enabledBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.cyan),
@@ -45,8 +60,15 @@ class CustomTextField extends StatelessWidget {
             ? null
             : IconButton(
                 onPressed: suffixIconPressed,
-                icon: suffixIcon ?? FaIcon(FontAwesomeIcons.notEqual)),
-        prefixIcon: prefixIcon,
+                icon: suffixIcon ?? FaIcon(FontAwesomeIcons.notEqual),
+              ),
+        prefixIcon: prefixIcon == null
+            ? null
+            : IconButton(
+                onPressed: prefixIconPressed,
+                
+                icon: prefixIcon ?? FaIcon(FontAwesomeIcons.notEqual),
+              ),
       ),
     );
   }

@@ -5,17 +5,20 @@ part 'comment_model.g.dart';
 @JsonSerializable()
 class CommentModel {
   final String comment;
-  final String createdBy;
+  final String createdById;
   final String reviewerName;
-  final String createdDate;
+  final DateTime createdDate;
   final String reviewerProfilePicture;
+  final String eventId;
 
-  CommentModel(
-      {required this.comment,
-      required this.createdBy,
-      required this.createdDate,
-      required this.reviewerName,
-      required this.reviewerProfilePicture});
+  CommentModel({
+    required this.comment,
+    required this.createdById,
+    required this.createdDate,
+    required this.reviewerName,
+    required this.reviewerProfilePicture,
+    required this.eventId,
+  });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) =>
       _$CommentModelFromJson(json);

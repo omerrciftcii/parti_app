@@ -10,7 +10,7 @@ class HomeProvider extends ChangeNotifier {
   bool _isWaiting = false;
   bool get isWaiting => _isWaiting;
   late TabController _tabController;
-
+  Location.LocationData? get currentPosition => _currentPosition;
   TabController get homeTabController => _tabController;
   set homeTabController(value) {
     _tabController = value;

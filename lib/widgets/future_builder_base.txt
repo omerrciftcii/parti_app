@@ -1,0 +1,25 @@
+ if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CustomWaitingIndicator(),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData &&
+                  snapshot.data!.isNotEmpty) {
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData &&
+                  snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text('There is no data'),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'An error has occured',
+                    style: GoogleFonts.jost(),
+                  ),
+                );
+              } else {
+                return Center(
+                  child: Text('Unknown'),
+                );
+              }

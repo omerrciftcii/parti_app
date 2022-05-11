@@ -12,7 +12,10 @@ import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
 
 class AddressSelectionScreen extends StatefulWidget {
-  const AddressSelectionScreen({Key? key}) : super(key: key);
+  final LatLng currentLocation;
+
+  const AddressSelectionScreen({Key? key, required this.currentLocation})
+      : super(key: key);
 
   @override
   State<AddressSelectionScreen> createState() => _AddressSelectionScreenState();
@@ -25,14 +28,20 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-  CameraPosition? cameraPosition;
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  late CameraPosition _currentLocation;
+
+  // static final  _currentLocation = CameraPosition(
+  //     bearing: 192.8334901395799,
+  //     target: LatLng(37.43296265331129, -122.08832357078792),
+  //     tilt: 59.440717697143555,
+  //     zoom: 19.151926040649414);
   @override
   void initState() {
+    _currentLocation = CameraPosition(
+        bearing: 192.8334901395799,
+        target: widget.currentLocation,
+        tilt: 59.440717697143555,
+        zoom: 19.151926040649414);
     super.initState();
   }
 
@@ -42,16 +51,32 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
     return Scaffold(
       bottomSheet: Container(
         height: 75,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: CustomButton(
-            backgroundColor: Colors.orange[700],
-            text: 'OK',
-            textStyle: GoogleFonts.jost(
-                color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              child: CustomButton(
+                backgroundColor: Colors.orange[700],
+                text: 'OK',
+                textStyle: GoogleFonts.jost(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              child: CustomButton(
+                backgroundColor: Colors.orange[700],
+                text: 'USE CURRENT LOCATION',
+                textStyle: GoogleFonts.jost(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ),
       ),
       appBar: AppBar(
@@ -64,11 +89,11 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
           GoogleMap(
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
-            initialCameraPosition: _kLake,
+            initialCameraPosition: _currentLocation,
             onMapCreated: (controller) => controller = controller,
             markers: markers,
             onLongPress: (location) async {
-              print('asdadDSA');
+              print('');
               setUpMarker(location.latitude, location.longitude);
               eventProvider.selectedLocation = location;
               List<Placemark> placemarks = await placemarkFromCoordinates(

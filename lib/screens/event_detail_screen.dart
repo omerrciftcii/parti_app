@@ -10,6 +10,7 @@ import 'package:parti_app/providers/event_provider.dart';
 import 'package:parti_app/screens/chat_detail_screen.dart';
 import 'package:parti_app/services/event_service.dart';
 import 'package:parti_app/utils/datetime_helper.dart';
+import 'package:parti_app/widgets/comments_widget.dart';
 import 'package:parti_app/widgets/custom_button.dart';
 import 'package:parti_app/widgets/custom_divider.dart';
 import 'package:parti_app/widgets/custom_textfield.dart';
@@ -17,7 +18,6 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../ui_helpers/expandable_fab.dart';
 import '../widgets/waiting_indicator.dart';
 
 class EventDetailScreen extends StatefulWidget {
@@ -34,15 +34,18 @@ class _EventDetailScreenState extends State<EventDetailScreen>
   @override
   void initState() {
     var eventProvider = Provider.of<EventProvider>(context, listen: false);
-    eventProvider.commnetsTabController =
-        TabController(vsync: this, length: 2, initialIndex: 0);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      eventProvider.commnetsTabController =
+          TabController(vsync: this, length: 2, initialIndex: 0);
 
-    eventProvider.commnetsTabController.addListener(() {
-      eventProvider.selectedTabIndex =
-          eventProvider.commnetsTabController.index;
+      eventProvider.commnetsTabController.addListener(() {
+        eventProvider.selectedTabIndex =
+            eventProvider.commnetsTabController.index;
+      });
+      eventProvider.eventDetailFuture =
+          EventService.getEventDetail(widget.eventID);
     });
-    eventProvider.eventDetailFuture =
-        EventService.getEventDetail(widget.eventID);
+
     super.initState();
   }
 
@@ -81,6 +84,7 @@ class _EventDetailScreenState extends State<EventDetailScreen>
           children: [
             Icon(
               Icons.line_weight,
+              color: Colors.orange,
             ),
             TabBar(
               controller: eventProviider.commnetsTabController,
@@ -102,20 +106,47 @@ class _EventDetailScreenState extends State<EventDetailScreen>
             Padding(
               padding: const EdgeInsets.only(left: 24.0, right: 24),
               child: CustomTextField(
-                controller: TextEditingController(),
+                maxLine: 3,
+                controller: eventProviider.commentController,
                 hintText: eventProviider.selectedTabIndex == 0
                     ? 'Add your question'
                     : "Add your review",
-                validator: (_) {},
-                suffixIcon: FaIcon(Icons.send),
+                validator: (query) {
+                  if (query!.isEmpty) {
+                    return 'This field cannot be empty';
+                  }
+                },
+                suffixIcon: eventProviider.isWaiting
+                    ? CustomWaitingIndicator()
+                    : FaIcon(Icons.send),
+                suffixIconPressed: () async {
+                  var response = await eventProviider.addComment(
+                      eventId: widget.eventID,
+                      reviewerName: authProvvider.currentUser!.name,
+                      createdById: authProvvider.currentUser!.userId,
+                      comment: eventProviider.commentController.text,
+                      isReview: eventProviider.commnetsTabController.index == 0
+                          ? false
+                          : true,
+                      reviewerProfilePicture:
+                          authProvvider.currentUser?.profilePicture ?? '');
+
+                  eventProviider.commentController.clear();
+                  eventProviider.getCommentsFuture = EventService.getComments(
+                    eventId: widget.eventID,
+                    isReview: eventProviider.commnetsTabController.index == 0
+                        ? false
+                        : true,
+                  );
+                },
               ),
             ),
             Expanded(
               child: TabBarView(
                 controller: eventProviider.commnetsTabController,
                 children: [
-                  Container(),
-                  Container(),
+                  CommentsWidget(isReview: true, eventId: widget.eventID),
+                  CommentsWidget(isReview: false, eventId: widget.eventID),
                 ],
               ),
             )

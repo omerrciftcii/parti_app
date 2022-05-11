@@ -1,8 +1,11 @@
+import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/providers/event_provider.dart';
+import 'package:parti_app/providers/home_provider.dart';
 import 'package:parti_app/screens/address_selection_screen.dart';
 import 'package:parti_app/widgets/custom_button.dart';
 import 'package:parti_app/widgets/custom_textfield.dart';
@@ -42,6 +45,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   Widget build(BuildContext context) {
     var eventProvider = Provider.of<EventProvider>(context);
     var authProvider = Provider.of<AuthProvider>(context);
+    var homeProvider = Provider.of<HomeProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         print('sfafdf');
@@ -107,6 +111,17 @@ class _NewEventScreenState extends State<NewEventScreen> {
                       Row(
                         children: [
                           Expanded(
+                            flex: 8,
+                            child: FilterChip(
+                              label: Text('Club Party'),
+                              onSelected: (_) {
+                                eventProvider.isHomeParty = false;
+                              },
+                              selected: !eventProvider.isHomeParty,
+                              selectedColor: Colors.orange,
+                            ),
+                          ),
+                          Expanded(
                             flex: 10,
                             child: FilterChip(
                               label: Text('Home Party'),
@@ -123,32 +138,32 @@ class _NewEventScreenState extends State<NewEventScreen> {
                               width: 10,
                             ),
                           ),
-                          Expanded(
-                            flex: 8,
-                            child: FilterChip(
-                              label: Text('Club Party'),
-                              onSelected: (_) {
-                                eventProvider.isHomeParty = false;
-                              },
-                              selected: !eventProvider.isHomeParty,
-                              selectedColor: Colors.orange,
-                            ),
-                          ),
                         ],
                       ),
                       CustomTextField(
                         controller: eventProvider.titleController,
-                        hintText: 'Title',
-                        validator: (_) {},
+                        hintText: 'Party Name',
+                        validator: (query) {
+                          if (query!.length < 10) {
+                            return 'Party name should be at least 10 characters';
+                          } else if (query.length > 50) {
+                            return 'Party name cannot be more than 50 characters';
+                          }
+                        },
                       ),
                       CustomTextField(
                         controller: eventProvider.descriptionController,
                         hintText: 'Description',
-                        validator: (_) {},
+                        validator: (query) {
+                          if (query!.length < 100) {
+                            return 'Description should be at least 100 characters';
+                          } else if (query.length > 1000) {
+                            return 'Description cannot be more than 50 characters';
+                          }
+                        },
                       ),
-
-                      SelectState(
-                        style: GoogleFonts.jost(),
+                      CSCPicker(
+                        showStates: true,
                         onCountryChanged: (value) {
                           eventProvider.currentCountry = value;
                         },
@@ -159,6 +174,18 @@ class _NewEventScreenState extends State<NewEventScreen> {
                           eventProvider.currentCity = value;
                         },
                       ),
+                      // SelectState(
+                      //   style: GoogleFonts.jost(),
+                      //   onCountryChanged: (value) {
+                      //     eventProvider.currentCountry = value;
+                      //   },
+                      //   onStateChanged: (value) {
+                      //     eventProvider.currentState = value;
+                      //   },
+                      //   onCityChanged: (value) {
+                      //     eventProvider.currentCity = value;
+                      //   },
+                      // ),
                       // InkWell(
                       //   onTap:(){
                       //     print('country selected is $countryValue');
@@ -169,7 +196,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                       // )
                       CustomTextField(
                         controller: eventProvider.addressController,
-                        readOnly: true,
+                        readOnly: false,
                         hintText: 'Address',
                         validator: (address) {
                           if (address!.isEmpty) {
@@ -181,7 +208,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => AddressSelectionScreen(),
+                              builder: (_) => AddressSelectionScreen(
+                                  currentLocation: LatLng(
+                                      homeProvider.currentPosition!.latitude ??
+                                          0,
+                                      homeProvider.currentPosition!.longitude ??
+                                          0)),
                             ),
                           );
                         },
@@ -232,7 +264,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                       CustomTextField(
                         readOnly: true,
                         controller: eventProvider.imageController,
-                        hintText: 'Add Image',
+                        hintText: 'Add Your Party Image (Optional)',
                         validator: (image) {},
                         suffixIcon: FaIcon(Icons.image),
                         suffixIconPressed: () async {

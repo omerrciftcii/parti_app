@@ -1,23 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:parti_app/constants/constants.dart';
 import 'package:parti_app/helpers/email_helper.dart';
+import 'package:parti_app/models/city_search_model.dart';
 import 'package:parti_app/models/comment_model.dart';
 import 'package:parti_app/models/event_model.dart';
 import 'package:parti_app/models/failure.dart';
 import 'package:parti_app/services/event_service.dart';
-import 'package:sendgrid_mailer/sendgrid_mailer.dart';
 import 'package:http/http.dart' as http;
+import 'package:parti_app/utils/datetime_helper.dart';
 import '../models/place_search.dart';
 
 class EventProvider extends ChangeNotifier {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _searchCityController = TextEditingController();
+
   bool _isHomeParty = true;
   bool _isWaiting = false;
   bool get isWaiting => _isWaiting;
@@ -29,6 +31,33 @@ class EventProvider extends ChangeNotifier {
   Future<List<EventModel>>? get futureEventsFuture => _futureEventsFuture;
   Future<List<EventModel>>? _myAttendingParties;
   Future<List<EventModel>>? get myAttendingParties => _myAttendingParties;
+  List<EventModel> _searchResultList = [];
+  List<EventModel> get searchResultList => _searchResultList;
+  String? _searchCitySelection;
+  String? get searchCitySelection => _searchCitySelection;
+  Future<List<EventModel>>? _searchEventFuture;
+  Future<List<EventModel>>? get searchEventFuture => _searchEventFuture;
+  bool _showSearchResult = false;
+  bool get showSearchResult => _showSearchResult;
+  set showSearchResult(value) {
+    _showSearchResult = value;
+    notifyListeners();
+  }
+
+  set searchEventFuture(value) {
+    _searchEventFuture = value;
+    notifyListeners();
+  }
+
+  set searchCitySelection(value) {
+    _searchCitySelection = value;
+    notifyListeners();
+  }
+
+  set searchResultList(value) {
+    _searchResultList = value;
+    notifyListeners();
+  }
 
   Future<List<CommentModel>>? _getCommentsFuture;
   Future<List<CommentModel>>? get getCommentsFuture => _getCommentsFuture;
@@ -90,14 +119,18 @@ class EventProvider extends ChangeNotifier {
   String? _currentCity;
   LatLng? _selectedLocation;
   LatLng? get selectedLocation => _selectedLocation;
-  TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
   TextEditingController get startDateController => _startDateController;
-  TextEditingController _endDateController = TextEditingController();
-  TextEditingController get endDateController => _endDateController;
-  TextEditingController _maxParticipiantController = TextEditingController();
-  TextEditingController _imageController = TextEditingController();
-  TextEditingController get imageController => _imageController;
+  TextEditingController get searchCityController => _searchCityController;
 
+  final TextEditingController _endDateController = TextEditingController();
+  TextEditingController get endDateController => _endDateController;
+  final TextEditingController _maxParticipiantController =
+      TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
+  TextEditingController get imageController => _imageController;
+  final TextEditingController _commentController = TextEditingController();
+  TextEditingController get commentController => _commentController;
   TextEditingController get maxParticipiantController =>
       _maxParticipiantController;
   XFile? _selectedEventImages;
@@ -139,6 +172,8 @@ class EventProvider extends ChangeNotifier {
   List<PlaceSearch>? get searchResults => _searchResults;
   TextEditingController get addressController => _addressController;
   TextEditingController get addressTitleController => _addressTitleController;
+  TextEditingController _searchEventController = TextEditingController();
+  TextEditingController get searchEventController => _searchEventController;
   DateTime _selectedStartDate = DateTime.now();
   String? _selectedEventPicture;
   String? get selectedEventPicture => _selectedEventPicture;
@@ -176,9 +211,9 @@ class EventProvider extends ChangeNotifier {
           firstDate: DateTime.now(),
           lastDate: DateTime(2101));
       var selectedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
+          context: context,
+          initialTime: TimeOfDay.now(),
+          initialEntryMode: TimePickerEntryMode.input);
       if (picked != null && picked != selectedStartDate) {
         selectedStartDate = picked;
         selectedStartDate = DateTime(
@@ -188,7 +223,8 @@ class EventProvider extends ChangeNotifier {
           selectedTime!.hour,
           selectedTime.minute,
         );
-        startDateController.text = selectedStartDate.toString();
+        startDateController.text =
+            DateTimeHelper.getDateTime(selectedStartDate);
       }
     } else {
       final DateTime? picked = await showDatePicker(
@@ -197,9 +233,9 @@ class EventProvider extends ChangeNotifier {
           firstDate: DateTime.now(),
           lastDate: DateTime(2101));
       var selectedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
+          context: context,
+          initialTime: TimeOfDay.now(),
+          initialEntryMode: TimePickerEntryMode.input);
       if (picked != null && picked != selectedEndDate) {
         selectedEndDate = picked;
         selectedEndDate = DateTime(
@@ -209,7 +245,7 @@ class EventProvider extends ChangeNotifier {
           selectedTime!.hour,
           selectedTime.minute,
         );
-        endDateController.text = selectedStartDate.toString();
+        endDateController.text = DateTimeHelper.getDateTime(selectedEndDate);
       }
     }
   }
@@ -220,12 +256,27 @@ class EventProvider extends ChangeNotifier {
     image =
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 0);
     if (image != null) {
-      var convertedImage = File(image.path);
+      var convertedImage = await testCompressAndGetFile(File(image.path), './');
+
       List<int> imageBytes = convertedImage.readAsBytesSync();
       String base64Image = base64Encode(imageBytes);
       selectedEventPicture = base64Image;
       imageController.text = image.name;
     }
+  }
+
+  Future<File> testCompressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 88,
+      rotate: 180,
+    );
+
+    print(file.lengthSync());
+    print(result!.lengthSync());
+
+    return result;
   }
 
   Future<EventModel> createEvent(
@@ -260,6 +311,18 @@ class EventProvider extends ChangeNotifier {
       throw Failure(
         errorMessage: e.toString(),
       );
+    }
+  }
+
+  Future<void> searchEvents() async {
+    try {
+      isWaiting = true;
+      var result =
+          await EventService.searchEvent(query: searchEventController.text);
+      searchResultList = result;
+      isWaiting = false;
+    } catch (e) {
+      isWaiting = false;
     }
   }
 
@@ -348,6 +411,40 @@ class EventProvider extends ChangeNotifier {
       return false;
     }
   }
-  //Email sender
 
+  //Email sender
+  Future<CommentModel> addComment(
+      {required String eventId,
+      required String reviewerName,
+      required String createdById,
+      required String comment,
+      required bool isReview,
+      required String reviewerProfilePicture}) async {
+    CommentModel commentModel = CommentModel(
+      comment: comment,
+      createdById: createdById,
+      createdDate: DateTime.now(),
+      reviewerName: reviewerName,
+      reviewerProfilePicture: reviewerProfilePicture,
+      eventId: eventId,
+    );
+
+    try {
+      isWaiting = true;
+      var response = await EventService.addComment(
+          comment: commentModel, isReview: isReview);
+      isWaiting = false;
+      return commentModel;
+    } catch (e) {
+      isWaiting = false;
+      throw Exception(e);
+    }
+  }
+
+  Future<List<CitySearchModel>>? _searchCitiesFuture;
+  Future<List<CitySearchModel>>? get searchCitiesFuture => _searchCitiesFuture;
+  set searchCitiesFuture(value) {
+    _searchCitiesFuture = value;
+    notifyListeners();
+  }
 }
