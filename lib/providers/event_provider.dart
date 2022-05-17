@@ -461,4 +461,19 @@ class EventProvider extends ChangeNotifier {
     _searchCitiesFuture = value;
     notifyListeners();
   }
+
+  Future<List<EventModel>>? _timeBasedEventFuture;
+
+  Future<List<EventModel>>? get timeBasedEventFuture => _timeBasedEventFuture;
+  set timeBasedEventFuture(value) {
+    _timeBasedEventFuture = value;
+    notifyListeners();
+  }
+
+  String? _timeKey;
+  String? get timeKey => _timeKey;
+  set timeKey(value) {
+    _timeKey = value;
+    notifyListeners();
+  }
 }

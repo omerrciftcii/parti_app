@@ -256,4 +256,29 @@ class EventService {
       throw Exception(e);
     }
   }
+
+  static Future<List<EventModel>> getEvents(
+      {required DateTime dateTime}) async {
+    try {
+      List<EventModel> eventList = [];
+      var response = await _firebaseFirestore
+          .collection('events')
+          .where('city', isEqualTo: city)
+          .withConverter<EventModel>(
+            fromFirestore: (snapshots, _) =>
+                EventModel.fromJson(snapshots.data()!),
+            toFirestore: (event, _) => event.toJson(),
+          )
+          .get();
+      if (response.docs.isNotEmpty) {
+        for (var element in response.docs) {
+          eventList.add(element.data());
+        }
+      } else {}
+
+      return eventList;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

@@ -103,20 +103,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color:
-                                              Colors.grey[200] ?? Colors.black,
+                                    child: InkWell(
+                                      onTap: (){
+                                        
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color:
+                                                Colors.grey[200] ?? Colors.black,
+                                          ),
                                         ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Today',
-                                          style: GoogleFonts.jost(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
+                                        child: Center(
+                                          child: Text(
+                                            'Today',
+                                            style: GoogleFonts.jost(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -289,7 +294,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         height: 100,
                       ),
                       Visibility(
-                        visible: true,
+                        visible: eventProvider.timeBasedEventFuture == null
+                            ? false
+                            : true,
                         child: Text(
                           'PARTIES I WILL ATTEND',
                           style: GoogleFonts.jost(
@@ -297,7 +304,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         ),
                       ),
                       FutureBuilder<List<EventModel>>(
-                        future: eventProvider.myAttendingParties,
+                        future: eventProvider.timeBasedEventFuture,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
