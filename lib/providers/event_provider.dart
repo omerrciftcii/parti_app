@@ -38,6 +38,20 @@ class EventProvider extends ChangeNotifier {
   Future<List<EventModel>>? _searchEventFuture;
   Future<List<EventModel>>? get searchEventFuture => _searchEventFuture;
   bool _showSearchResult = false;
+  bool _reviewSelected = false;
+  bool get reviewSelected => _reviewSelected;
+  set reviewSelected(value) {
+    _reviewSelected = value;
+    notifyListeners();
+  }
+
+  List<EventModel> _searchEventResult = [];
+  List<EventModel> get searchEventResult => _searchEventResult;
+  set searchEventResult(value) {
+    _searchEventResult = value;
+    notifyListeners();
+  }
+
   bool get showSearchResult => _showSearchResult;
   set showSearchResult(value) {
     _showSearchResult = value;
@@ -318,7 +332,7 @@ class EventProvider extends ChangeNotifier {
     try {
       isWaiting = true;
       var result =
-          await EventService.searchEvent(query: searchEventController.text);
+          await EventService.searchEvent(city: searchCitySelection ?? '');
       searchResultList = result;
       isWaiting = false;
     } catch (e) {

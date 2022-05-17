@@ -9,6 +9,7 @@ import 'package:parti_app/providers/auth_provider.dart';
 import 'package:parti_app/providers/event_provider.dart';
 import 'package:parti_app/screens/chat_detail_screen.dart';
 import 'package:parti_app/services/event_service.dart';
+import 'package:parti_app/ui_helpers/expandable_fab.dart';
 import 'package:parti_app/utils/datetime_helper.dart';
 import 'package:parti_app/widgets/comments_widget.dart';
 import 'package:parti_app/widgets/custom_button.dart';
@@ -88,19 +89,34 @@ class _EventDetailScreenState extends State<EventDetailScreen>
             ),
             TabBar(
               controller: eventProviider.commnetsTabController,
+              indicatorColor: Colors.transparent,
               tabs: [
                 Tab(
-                  child: Text(
+                    child: FilterChip(
+                  label: Text(
                     'Questions',
                     style: GoogleFonts.jost(color: Colors.black),
                   ),
-                ),
+                  onSelected: (isSelected) {
+                    eventProviider.commnetsTabController.index = 0;
+                    eventProviider.reviewSelected = false;
+                  },
+                  selectedColor: Color(0xffD8A64D),
+                  selected: !eventProviider.reviewSelected,
+                )),
                 Tab(
-                  child: Text(
+                    child: FilterChip(
+                  label: Text(
                     'Reviews',
                     style: GoogleFonts.jost(color: Colors.black),
                   ),
-                ),
+                  onSelected: (isSelected) {
+                    eventProviider.commnetsTabController.index = 1;
+                    eventProviider.reviewSelected = true;
+                  },
+                  selected: eventProviider.reviewSelected,
+                  selectedColor: Color(0xffD8A64D),
+                )),
               ],
             ),
             Padding(
@@ -116,9 +132,13 @@ class _EventDetailScreenState extends State<EventDetailScreen>
                     return 'This field cannot be empty';
                   }
                 },
+                prefixIcon: FaIcon(
+                  Icons.reviews_outlined,
+                  color: Color(0xffD8A64D),
+                ),
                 suffixIcon: eventProviider.isWaiting
                     ? CustomWaitingIndicator()
-                    : FaIcon(Icons.send),
+                    : FaIcon(Icons.send_outlined),
                 suffixIconPressed: () async {
                   var response = await eventProviider.addComment(
                       eventId: widget.eventID,

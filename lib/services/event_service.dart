@@ -232,13 +232,13 @@ class EventService {
     }
   }
 
-  static Future<List<EventModel>> searchEvent({required String query}) async {
+  static Future<List<EventModel>> searchEvent(
+      {String? query, required String city}) async {
     try {
       List<EventModel> eventList = [];
       var response = await _firebaseFirestore
           .collection('events')
-          .where('title', isGreaterThanOrEqualTo: query)
-          .where('title', isLessThan: query + 'z')
+          .where('city', isEqualTo: city)
           .withConverter<EventModel>(
             fromFirestore: (snapshots, _) =>
                 EventModel.fromJson(snapshots.data()!),

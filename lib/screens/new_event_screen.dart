@@ -58,32 +58,55 @@ class _NewEventScreenState extends State<NewEventScreen> {
             height: 50,
             child: eventProvider.isWaiting
                 ? Center(child: CustomWaitingIndicator())
-                : InkWell(
-                    onTap: () async {
-                      if (eventProvider.formKey.currentState!.validate()) {
-                        var response = await eventProvider.createEvent(
-                            authProvider.currentUser!.userId,
-                            authProvider.currentUser?.name ?? '',
-                            authProvider.currentUser?.profilePicture ?? '');
-                        if (response != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Event created successfully'),
-                            ),
-                          );
+                : Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: CustomButton(
+                          backgroundColor: Color(0x80AC3AA1),
+                          text: 'Cancel',
+                          textStyle: GoogleFonts.jost(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 28,
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: InkWell(
+                          onTap: () async {
+                            if (eventProvider.formKey.currentState!
+                                .validate()) {
+                              var response = await eventProvider.createEvent(
+                                  authProvider.currentUser!.userId,
+                                  authProvider.currentUser?.name ?? '',
+                                  authProvider.currentUser?.profilePicture ??
+                                      '');
+                              if (response != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Event created successfully'),
+                                  ),
+                                );
 
-                          Navigator.pop(context);
-                        }
-                      }
-                    },
-                    child: CustomButton(
-                      backgroundColor: Colors.orange,
-                      text: 'Create Event',
-                      textStyle: GoogleFonts.jost(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                          child: CustomButton(
+                            backgroundColor: Color(0xffAC3AA1),
+                            text: 'Create Event',
+                            textStyle: GoogleFonts.jost(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
           ),
         ),
@@ -113,13 +136,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
                           Expanded(
                             flex: 8,
                             child: FilterChip(
-                              label: Text('Club Party'),
-                              onSelected: (_) {
-                                eventProvider.isHomeParty = false;
-                              },
-                              selected: !eventProvider.isHomeParty,
-                              selectedColor: Colors.orange,
-                            ),
+                                label: Text('Club Party'),
+                                onSelected: (_) {
+                                  eventProvider.isHomeParty = false;
+                                },
+                                selected: !eventProvider.isHomeParty,
+                                selectedColor: Color(0xffD8A64D)),
                           ),
                           Expanded(
                             flex: 10,
@@ -128,7 +150,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                               onSelected: (_) {
                                 eventProvider.isHomeParty = true;
                               },
-                              selectedColor: Colors.orange,
+                              selectedColor: Color(0xffD8A64D),
                               selected: eventProvider.isHomeParty,
                             ),
                           ),
@@ -163,6 +185,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
                         },
                       ),
                       CSCPicker(
+                        dropdownDecoration: BoxDecoration(
+                          color: Color(0x90D8A64D),
+                        ),
                         showStates: true,
                         onCountryChanged: (value) {
                           eventProvider.currentCountry = value;

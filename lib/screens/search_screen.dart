@@ -44,9 +44,8 @@ class SearchPage extends StatelessWidget {
               print(eventProvider.searchCitySelection);
               if (eventProvider.searchCitySelection != null &&
                   eventProvider.searchCitySelection!.isNotEmpty) {
-
-                eventProvider.searchEventFuture = 
-                eventProvider.showSearchResult = true;
+                await eventProvider.searchEvents();
+                // Navigator.pop(context, false);
               } else {
                 Navigator.pop(context, false);
               }
@@ -59,47 +58,30 @@ class SearchPage extends StatelessWidget {
             },
             prefixIcon: FaIcon(Icons.location_city),
           ),
-          Visibility(
-            visible: eventProvider.showSearchResult,
-            child: FutureBuilder<List<EventModel>>(
-              future: eventProvider.searchEventFuture,
-              builder: ((context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CustomWaitingIndicator(),
-                  );
-                } else if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData &&
-                    snapshot.data!.isNotEmpty) {
-                  return ListView.builder(
+          eventProvider.isWaiting
+              ? Center(
+                  child: CustomWaitingIndicator(),
+                )
+              : eventProvider.searchResultList.isEmpty
+                  ? Center(
+                      child: Text('There is no data'),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: eventProvider.searchResultList.length,
                       itemBuilder: (BuildContext context, int index) {
-                    return EventCard(
-                        onTap: () {},
-                        title: snapshot.data![index].title ?? '',
-                        location: snapshot.data![index].address ?? '',
-                        image: snapshot.data![index].eventPicture ?? '');
-                  });
-                } else if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData &&
-                    snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Text('There is no data'),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      'An error has occured',
-                      style: GoogleFonts.jost(),
-                    ),
-                  );
-                } else {
-                  return Center(
-                    child: Text('Unknown'),
-                  );
-                }
-              }),
-            ),
-          ),
+                        return EventCard(
+                            onTap: () {},
+                            title:
+                                eventProvider.searchResultList[index].title ??
+                                    '',
+                            location:
+                                eventProvider.searchResultList[index].address ??
+                                    '',
+                            image: eventProvider
+                                    .searchResultList[index].eventPicture ??
+                                '');
+                      })
         ]),
       ),
     );

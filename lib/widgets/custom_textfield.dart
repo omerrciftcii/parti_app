@@ -50,10 +50,10 @@ class CustomTextField extends StatelessWidget {
       minLines: 1,
       decoration: InputDecoration(
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.cyan),
+          borderSide: BorderSide(color: Color(0xffD8A64D)),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.cyan),
+          borderSide: BorderSide(color: Color(0xffD8A64D)),
         ),
         hintText: hintText,
         suffixIcon: suffixIcon == null
@@ -66,7 +66,6 @@ class CustomTextField extends StatelessWidget {
             ? null
             : IconButton(
                 onPressed: prefixIconPressed,
-                
                 icon: prefixIcon ?? FaIcon(FontAwesomeIcons.notEqual),
               ),
       ),
